@@ -1,0 +1,11 @@
+:root { color-scheme: dark; font: 14px/1.4 system-ui, sans-serif; }
+body { margin: 0; min-width: 300px; background: #161616; color: #f3f3f3; }
+main { padding: 16px; }
+h1 { font-size: 16px; margin: 0 0 8px; }
+p { margin: 0 0 12px; }
+fieldset { display: grid; gap: 6px; margin: 0 0 12px; border: 1px solid #555; border-radius: 6px; }
+label { display: flex; gap: 8px; align-items: center; }
+.warning { color: #ffd18a; }
+button { width: 100%; padding: 9px; border: 0; border-radius: 6px; cursor: pointer; }
+button:disabled { cursor: wait; opacity: .7; }
+#status { min-height: 20px; color: #b8d4ff; }

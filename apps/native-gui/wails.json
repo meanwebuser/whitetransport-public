@@ -1,0 +1,17 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "WhiteTransport",
+  "productVersion": "0.5.1",
+  "info": {
+    "productName": "WhiteTransport",
+    "productVersion": "0.5.1"
+  },
+  "outputfilename": "WhiteTransport",
+  "frontend:install": "npm --prefix ../../.. ci",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "http://localhost:5173",
+  "author": {
+    "name": "WhiteTransport"
+  }
+}

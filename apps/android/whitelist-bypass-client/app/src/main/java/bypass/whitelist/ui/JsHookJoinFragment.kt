@@ -1,0 +1,334 @@
+package bypass.whitelist.ui
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.ConnectivityManager
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.webkit.ConsoleMessage
+import android.webkit.JavascriptInterface
+import android.webkit.PermissionRequest
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import bypass.whitelist.R
+import bypass.whitelist.tunnel.CallPlatform
+import bypass.whitelist.tunnel.RelayController
+import bypass.whitelist.tunnel.TunnelMode
+import bypass.whitelist.tunnel.VpnStatus
+import bypass.whitelist.util.BLANK_URL
+import bypass.whitelist.util.DESKTOP_USER_AGENT
+import bypass.whitelist.util.Ports
+import bypass.whitelist.util.Prefs
+import bypass.whitelist.util.maskUrl
+import java.net.HttpURLConnection
+import java.net.Inet4Address
+import java.net.InetAddress
+import java.net.URL
+import java.util.concurrent.atomic.AtomicBoolean
+
+private data class HookKey(val isPion: Boolean, val platform: CallPlatform)
+
+class JsHookJoinFragment : Fragment(), JoinSessionShutdown {
+
+    private lateinit var webView: WebView
+    private lateinit var toggleButton: View
+    private lateinit var toggleArrow: ImageView
+    private lateinit var toggleLabel: TextView
+    private lateinit var relay: RelayController
+
+    private var expanded = false
+    private var callUrl = ""
+    private val shutdownOnce = AtomicBoolean(false)
+
+    private val host: JoinFragmentHost?
+        get() = activity as? JoinFragmentHost
+
+    private val tunnelMode: TunnelMode
+        get() = Prefs.activeTunnelMode
+
+    private val hooks = mapOf(
+        HookKey(false, CallPlatform.VK) to lazy { loadAsset("dc-joiner-vk.js") },
+        HookKey(false, CallPlatform.TELEMOST) to lazy { loadAsset("video-telemost.js") },
+        HookKey(true, CallPlatform.VK) to lazy { loadAsset("video-vk.js") },
+        HookKey(true, CallPlatform.TELEMOST) to lazy { loadAsset("video-telemost.js") },
+    )
+
+    private val autofillers = mapOf(
+        CallPlatform.VK to lazy { loadAsset("autoclick-vk.js") },
+        CallPlatform.TELEMOST to lazy { loadAsset("autoclick-telemost.js") },
+    )
+
+    private val muteAudioContext by lazy { loadAsset("mute-audio-context.js") }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View = inflater.inflate(R.layout.fragment_jshook_join, container, false)
+
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        webView = view.findViewById(R.id.webView)
+        toggleButton = view.findViewById(R.id.toggleWebViewButton)
+        toggleArrow = view.findViewById(R.id.toggleWebViewArrow)
+        toggleLabel = view.findViewById(R.id.toggleWebViewLabel)
+        view.findViewById<ImageButton>(R.id.webviewBackButton).setOnClickListener {
+            host?.onJoinCancel()
+        }
+
+        relay = RelayController(
+            nativeLibDir = requireContext().applicationInfo.nativeLibraryDir,
+            onLog = {
+                if (!isSessionAlive()) return@RelayController
+                host?.appendLog(it)
+            },
+            onStatus = { status ->
+                if (!isSessionAlive()) return@RelayController
+                if (!relay.isRunning) return@RelayController
+                host?.onJoinStatus(status)
+            },
+        )
+
+        val platform = CallPlatform.fromUrl(requireArguments().getString(ARG_URL, ""))
+        relay.start(tunnelMode, platform)
+
+        toggleButton.setOnClickListener { setExpanded(!expanded) }
+
+        webView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            mediaPlaybackRequiresUserGesture = false
+            allowContentAccess = true
+            allowFileAccess = true
+            databaseEnabled = true
+            setSupportMultipleWindows(false)
+            useWideViewPort = true
+            loadWithOverviewMode = true
+            builtInZoomControls = true
+            displayZoomControls = false
+            userAgentString = DESKTOP_USER_AGENT
+        }
+
+        webView.addJavascriptInterface(JsBridge(), "AndroidBridge")
+
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onPermissionRequest(request: PermissionRequest) {
+                activity?.runOnUiThread { request.grant(request.resources) }
+            }
+
+            override fun onConsoleMessage(msg: ConsoleMessage): Boolean {
+                if (!isSessionAlive()) return true
+                val text = msg.message()
+                Log.d("HOOK", text)
+                if (text.contains("[HOOK]")) {
+                    host?.appendLog(text)
+                    when {
+                        text.contains("CALL CONNECTED") -> host?.onJoinStatus(VpnStatus.CALL_CONNECTED)
+                        text.contains("DataChannel open") -> host?.onJoinStatus(VpnStatus.DATACHANNEL_OPEN)
+                        text.contains("DataChannel closed") -> host?.onJoinStatus(VpnStatus.DATACHANNEL_LOST)
+                        text.contains("WebSocket connected") -> host?.onJoinStatus(VpnStatus.CALL_CONNECTED)
+                        text.contains("WebSocket disconnected") -> host?.onJoinStatus(VpnStatus.TUNNEL_LOST)
+                        text.contains("Connection state: connecting") -> host?.onJoinStatus(VpnStatus.CONNECTING)
+                        text.contains("Connection state: disconnected") -> host?.onJoinStatus(VpnStatus.CALL_DISCONNECTED)
+                        text.contains("Connection state: failed") -> host?.onJoinStatus(VpnStatus.CALL_FAILED)
+                    }
+                }
+                return true
+            }
+        }
+
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
+                if (!isSessionAlive()) return null
+                val url = request.url.toString()
+                val platform = CallPlatform.fromUrl(url)
+                if (platform != CallPlatform.TELEMOST || !url.contains("/j/") || request.method != "GET") return null
+                return stripCsp(url, request)
+            }
+
+            override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+                if (!isSessionAlive()) return
+                if (url.contains(BLANK_URL)) return
+                view.evaluateJavascript(muteAudioContext, null)
+            }
+
+            override fun onPageFinished(view: WebView, url: String) {
+                if (!isSessionAlive()) return
+                if (url.contains(BLANK_URL)) return
+                if (!expanded && url != callUrl) activity?.runOnUiThread { setExpanded(true) }
+                view.evaluateJavascript("!!window.__hookInstalled") { result ->
+                    if (!isSessionAlive()) return@evaluateJavascript
+                    if (result == "true") {
+                        Log.d("HOOK", "Hook already injected, skipping")
+                        return@evaluateJavascript
+                    }
+                    val platform = CallPlatform.fromUrl(url)
+                    host?.appendLog("Page loaded, injecting hook for ${maskUrl(url)}")
+                    view.evaluateJavascript("window.WS_PORT=${androidbind.Androidbind.activeWsPort()}", null)
+                    view.evaluateJavascript("window.PION_PORT=${Ports.PION_SIGNALING}", null)
+                    view.evaluateJavascript(hookForPlatform(platform), null)
+                    if (Prefs.autofillEnabled) {
+                        host?.appendLog("Injecting autofill for ${maskUrl(url)}")
+                        view.evaluateJavascript("window.autofillName='${Prefs.autofillName}'", null)
+                        view.evaluateJavascript(autofillers[platform]!!.value, null)
+                    }
+                }
+            }
+        }
+
+        val url = requireArguments().getString(ARG_URL, "")
+        if (url.isNotEmpty()) {
+            callUrl = url
+            webView.loadUrl(url)
+        }
+    }
+
+    override fun onDestroyView() {
+        shutdownSession()
+        if (::webView.isInitialized) {
+            runCatching {
+                webView.stopLoading()
+                webView.loadUrl(BLANK_URL)
+                webView.destroy()
+            }
+        }
+        super.onDestroyView()
+    }
+
+    override fun shutdownSession() {
+        if (!shutdownOnce.compareAndSet(false, true)) return
+        runCatching { relay.stop() }
+        if (::webView.isInitialized) {
+            runCatching {
+                webView.stopLoading()
+                webView.loadUrl(BLANK_URL)
+            }
+        }
+    }
+
+    fun expand() {
+        setExpanded(true)
+    }
+
+    private fun isSessionAlive(): Boolean = !shutdownOnce.get()
+
+    private fun setExpanded(value: Boolean) {
+        expanded = value
+        webView.visibility = if (value) View.VISIBLE else View.GONE
+        toggleArrow.rotation = if (value) 180f else 0f
+        toggleLabel.setText(if (value) R.string.collapse_webview else R.string.expand_webview)
+    }
+
+    private fun hookForPlatform(platform: CallPlatform): String =
+        hooks[HookKey(tunnelMode.isPion, platform)]!!.value
+
+    private fun stripCsp(url: String, request: WebResourceRequest): WebResourceResponse? {
+        return try {
+            val conn = URL(url).openConnection() as HttpURLConnection
+            conn.requestMethod = "GET"
+            request.requestHeaders?.forEach { (key, value) -> conn.setRequestProperty(key, value) }
+            val headers = mutableMapOf<String, String>()
+            conn.headerFields?.forEach { (key, values) ->
+                if (key != null
+                    && !key.equals("content-security-policy", ignoreCase = true)
+                    && !key.equals("content-security-policy-report-only", ignoreCase = true)
+                ) {
+                    headers[key] = values.joinToString(", ")
+                }
+            }
+            WebResourceResponse(
+                conn.contentType?.split(";")?.firstOrNull() ?: "text/html",
+                "utf-8", conn.responseCode, conn.responseMessage ?: "OK",
+                headers, conn.inputStream
+            )
+        } catch (_: Exception) { null }
+    }
+
+    private fun getLocalIPAddress(): String {
+        try {
+            val context = context ?: return ""
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val network = connectivityManager.activeNetwork ?: return ""
+            val linkProperties = connectivityManager.getLinkProperties(network) ?: return ""
+            for (addr in linkProperties.linkAddresses) {
+                val ip = addr.address
+                if (!ip.isLoopbackAddress && ip is Inet4Address) {
+                    return ip.hostAddress ?: ""
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("RELAY", "getLocalIPAddress error", e)
+        }
+        return ""
+    }
+
+    private fun loadAsset(name: String): String =
+        requireContext().assets.open(name).bufferedReader().readText()
+
+    @Suppress("unused")
+    inner class JsBridge {
+        @JavascriptInterface
+        fun log(msg: String) {
+            if (!isSessionAlive()) return
+            host?.appendLog(msg)
+        }
+
+        @JavascriptInterface
+        fun getLocalIP(): String = getLocalIPAddress()
+
+        @JavascriptInterface
+        fun resolveHost(hostname: String): String = try {
+            val all = InetAddress.getAllByName(hostname)
+            val v4 = all.firstOrNull { it is Inet4Address }
+            val addr = v4 ?: all.first()
+            val ip = addr.hostAddress ?: ""
+            Log.d("RELAY", "resolveHost: $hostname -> $ip (${addr.javaClass.simpleName}, ${all.size} addrs)")
+            ip
+        } catch (e: Exception) {
+            Log.d("RELAY", "resolveHost: $hostname -> FAILED: ${e.message}")
+            ""
+        }
+
+        @JavascriptInterface
+        fun onTunnelReady() {
+            if (!isSessionAlive()) return
+            host?.appendLog("Tunnel ready, starting VPN...")
+            host?.onJoinStatusText("Relay ready, starting local VPN")
+            activity?.runOnUiThread { host?.requestVpn() }
+        }
+
+        @JavascriptInterface
+        fun onCaptchaDetected(isDone: Boolean) {
+            if (!isSessionAlive()) return
+            if (!isDone) {
+                host?.onJoinStatus(VpnStatus.ACTION_REQUIRED_CAPTCHA)
+                activity?.runOnUiThread { expand() }
+            } else {
+                host?.onJoinStatus(VpnStatus.CONNECTING)
+            }
+        }
+    }
+
+    companion object {
+        const val ARG_URL = "url"
+
+        fun newInstance(url: String): JsHookJoinFragment {
+            return JsHookJoinFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_URL, url)
+                }
+            }
+        }
+    }
+}
