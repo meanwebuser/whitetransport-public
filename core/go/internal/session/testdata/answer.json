@@ -1,0 +1,28 @@
+{
+  "session_id": "sess-123",
+  "node_id": "example-exit-node",
+  "label": "Example Exit Node",
+  "country": "NL",
+  "region": "AMS",
+  "endpoints": [
+    {
+      "ID": "vk-control",
+      "Carrier": "vk.messages",
+      "Address": "peer:PLACEHOLDER_VK_PEER_ID",
+      "Metadata": {
+        "scope": "control"
+      }
+    }
+  ],
+  "egress_endpoints": [
+    {
+      "ID": "wb-egress",
+      "Carrier": "wbstream.vp8",
+      "Address": "wbstream://room-123",
+      "Metadata": {
+        "mode": "egress"
+      }
+    }
+  ],
+  "expires_at": "2026-06-08T12:00:00Z"
+}

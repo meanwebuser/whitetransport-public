@@ -1,0 +1,40 @@
+{
+  "name": "whitetransport-monorepo",
+  "version": "0.4.268",
+  "private": true,
+  "type": "module",
+  "description": "Public source snapshot of the WhiteTransport adaptive communication fabric.",
+  "workspaces": [
+    "apps/client-web",
+    "apps/web",
+    "packages/*",
+    "tests/e2e/ui-appium"
+  ],
+  "scripts": {
+    "dev:gateway": "npm --prefix packages/wisp-gateway run dev",
+    "build:gateway": "npm --prefix packages/wisp-gateway run build",
+    "typecheck:gateway": "npm --prefix packages/wisp-gateway run typecheck",
+    "build:browser": "npm --prefix packages/browser-transport run build",
+    "build:desktop": "npm --prefix apps/native-gui/frontend run build",
+    "test:browser": "npm --prefix packages/browser-transport test",
+    "build:web": "npm --prefix apps/web run build",
+    "typecheck:desktop": "npm --prefix apps/native-gui/frontend run typecheck",
+    "typecheck:providers": "npm --prefix packages/provider-channels run typecheck",
+    "build:providers": "npm --prefix packages/provider-channels run build",
+    "typecheck:any": "npm --prefix packages/any-transport run typecheck",
+    "verify:transports": "npm --prefix packages/provider-channels test && npm --prefix packages/video-conference-transport test && npm --prefix packages/any-transport test -- --runInBand",
+    "verify:browser": "npm run test:browser",
+    "verify:gateway": "npm run typecheck:gateway",
+    "verify:web": "npm run build:web",
+    "verify:desktop": "npm run typecheck:desktop",
+    "verify:go-core": "cd core/go && go test ./...",
+    "verify:packages": "npm run verify:transports && npm run verify:browser && npm run verify:gateway",
+    "verify:apps": "npm run verify:web && npm run verify:desktop",
+    "verify": "npm run verify:packages && npm run verify:apps && npm run verify:go-core"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meanwebuser/whitetransport-public.git"
+  },
+  "license": "MIT"
+}

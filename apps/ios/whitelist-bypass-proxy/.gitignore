@@ -1,0 +1,7 @@
+.DS_Store
+build/
+Mobile.xcframework/
+xcuserdata/
+*.xcuserstate
+DerivedData/
+whitelist-bypass-proxy/WtBusSecrets.swift

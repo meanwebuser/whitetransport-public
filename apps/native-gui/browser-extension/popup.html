@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WhiteTransport</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <h1>WBStream → WhiteTransport</h1>
+      <p>Откройте авторизованную вкладку WBStream. Расширение ничего не отправляет в сеть, а сохраняет выбранные данные в JSON-файл.</p>
+      <fieldset>
+        <legend>Что сохранить</legend>
+        <label><input id="include-cookies" type="checkbox" checked /> Cookies WBStream</label>
+        <label><input id="include-local-storage" type="checkbox" checked /> WBStream localStorage auth</label>
+      </fieldset>
+      <p class="warning">Внимание: файл содержит данные входа. Не передавайте его другим и удалите после импорта.</p>
+      <button id="export" type="button">Сохранить свежую сессию</button>
+      <p id="status" role="status" aria-live="polite"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

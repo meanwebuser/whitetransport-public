@@ -1,0 +1,9 @@
+node_modules
+.DS_Store
+scramjet/
+.cache/
+.local/
+data/remote-chrome-profile/
+data/remote-chrome-profile-*
+
+artifacts/
