@@ -1,0 +1,23 @@
+{
+  "name": "@whitetransport/provider-channels",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Shared provider-channel contracts for VK, TG, OK, and future communication backends.",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent_emerald">#FF00D7FF</color>
+    <color name="accent_emerald_soft">#2600D7FF</color>
+    <color name="accent_red">#FF7B1C2A</color>
+    <color name="accent_red_soft">#1F7B1C2A</color>
+    <color name="warn_amber">#FFB07A1D</color>
+    <color name="error_red">#FFD32F2F</color>
+    <color name="ink">#FF0D0D0C</color>
+    <color name="ink_2">#FF4A4946</color>
+    <color name="ink_3">#FF8A8782</color>
+    <color name="hair">#140D0D0C</color>
+    <color name="hair_strong">#290D0D0C</color>
+    <color name="panel_bg">#FFFFFFFF</color>
+    <color name="panel_2">#FFF7FBFF</color>
+    <color name="surface_bg">#FFFFFFFF</color>
+</resources>

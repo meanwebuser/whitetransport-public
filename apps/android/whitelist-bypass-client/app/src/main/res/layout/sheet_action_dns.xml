@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="22dp">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dns_settings_title"
+        android:textColor="@color/ink"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/dns_sub"
+        android:textColor="@color/ink_3"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:id="@+id/dnsModeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/dnsCustomFields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/SheetFieldLabel"
+            android:layout_marginTop="14dp"
+            android:text="@string/dns_primary_label" />
+
+        <EditText
+            android:id="@+id/dnsPrimaryInput"
+            style="@style/SheetMonoInput"
+            android:hint="@string/dns_primary_hint"
+            android:inputType="text" />
+
+        <TextView
+            style="@style/SheetFieldLabel"
+            android:layout_marginTop="14dp"
+            android:text="@string/dns_secondary_label" />
+
+        <EditText
+            android:id="@+id/dnsSecondaryInput"
+            style="@style/SheetMonoInput"
+            android:hint="@string/dns_secondary_hint"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/dnsCancelButton"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/sheet_cancel" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/dnsSaveButton"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="@string/sheet_save_short" />
+    </LinearLayout>
+</LinearLayout>

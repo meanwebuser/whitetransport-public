@@ -1,0 +1,9 @@
+{
+  "socks_host": "127.0.0.1",
+  "socks_port": 1080,
+  "mode": "full",
+  "bypass_cidrs": [],
+  "only_cidrs": [],
+  "tun2socks_path": "",
+  "mtu": 1500
+}

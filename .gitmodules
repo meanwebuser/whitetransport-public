@@ -1,0 +1,4 @@
+[submodule "third_party/openflux"]
+	path = third_party/openflux
+	url = https://github.com/p1neappleXpress/OpenFlux.git
+	branch = main

@@ -1,0 +1,36 @@
+# Dependencies and build artifacts
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+__pycache__/
+*.py[cod]
+*.log
+*.pid
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+access-token.txt
+cookies*.json
+*cookies*.json
+*token*.txt
+*.pem
+*.key
+
+# Generated runtime artifacts
+/artifacts/
+/core/go/artifacts/
+/core/go/whitetransportd
+/downloads/
+bin/
+logs/
+run/
+
+# Editor and temporary files
+*.bak
+*.bak.*
+*.tmp
+*.swp
+.DS_Store
