@@ -1,0 +1,31 @@
+{
+  "name": "@whitetransport/video-conference-transport",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Stable WhiteTransport adapter boundary for VK and Telemost video-conference transports.",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./src/node.ts",
+      "default": "./dist/node.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm --prefix ../provider-channels run build && npm run build && node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@whitetransport/provider-channels": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.19",
+    "typescript": "^6.0.3"
+  },
+  "license": "MIT"
+}

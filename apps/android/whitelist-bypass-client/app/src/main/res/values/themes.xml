@@ -1,0 +1,142 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.WhitelistBypass" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent_emerald</item>
+        <item name="colorOnPrimary">@color/panel_bg</item>
+        <item name="colorPrimaryContainer">@color/accent_emerald_soft</item>
+        <item name="colorOnPrimaryContainer">@color/accent_emerald</item>
+        <item name="colorSecondary">@color/accent_emerald</item>
+        <item name="colorOnSecondary">@color/panel_bg</item>
+        <item name="colorSecondaryContainer">@color/accent_emerald_soft</item>
+        <item name="colorOnSecondaryContainer">@color/accent_emerald</item>
+        <item name="colorTertiary">@color/accent_emerald</item>
+        <item name="colorOnTertiary">@color/panel_bg</item>
+        <item name="colorTertiaryContainer">@color/accent_emerald_soft</item>
+        <item name="colorOnTertiaryContainer">@color/accent_emerald</item>
+        <item name="android:colorBackground">@color/surface_bg</item>
+        <item name="colorSurface">@color/panel_bg</item>
+        <item name="colorSurfaceVariant">@color/panel_2</item>
+        <item name="colorSurfaceContainer">@color/panel_2</item>
+        <item name="colorOnSurface">@color/ink</item>
+        <item name="colorOnSurfaceVariant">@color/ink_2</item>
+        <item name="colorOutline">@color/hair_strong</item>
+        <item name="colorOutlineVariant">@color/hair</item>
+        <item name="colorError">@color/error_red</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.WhitelistBypass.BottomSheetDialog</item>
+    </style>
+
+    <style name="ThemeOverlay.WhitelistBypass.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.WhitelistBypass.BottomSheet</item>
+        <item name="android:windowAnimationStyle">@style/Animation.Design.BottomSheetDialog</item>
+    </style>
+
+    <style name="Widget.WhitelistBypass.BottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.WhitelistBypass.BottomSheet</item>
+        <item name="backgroundTint">@color/panel_bg</item>
+    </style>
+
+    <style name="ShapeAppearance.WhitelistBypass.BottomSheet" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">24dp</item>
+        <item name="cornerSizeTopRight">24dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="SheetFieldLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:letterSpacing">0.16</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/ink_3</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="SheetMonoInput">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_input</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textColorHint">@color/ink_3</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Theme.WhitelistBypass" parent="Base.Theme.WhitelistBypass" />
+
+    <style name="StatCell">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">14dp</item>
+    </style>
+
+    <style name="StatLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:letterSpacing">0.18</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/ink_3</item>
+        <item name="android:textSize">9sp</item>
+    </style>
+
+    <style name="StatValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="StatVDivider">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/hair</item>
+    </style>
+
+    <style name="StatHDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/hair</item>
+    </style>
+
+    <style name="SplitModeRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="SplitModeTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SplitModeSub">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:textColor">@color/ink_3</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="SplitModeCheck">
+        <item name="android:layout_width">22dp</item>
+        <item name="android:layout_height">22dp</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:src">@drawable/ic_check</item>
+        <item name="android:tint">@color/accent_emerald</item>
+        <item name="android:visibility">invisible</item>
+    </style>
+</resources>

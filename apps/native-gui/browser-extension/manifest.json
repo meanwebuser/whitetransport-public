@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "WhiteTransport WBStream Sync",
+  "version": "0.1.0",
+  "description": "Exports the current WBStream browser session for local WhiteTransport import.",
+  "permissions": ["activeTab", "cookies", "downloads"],
+  "host_permissions": ["https://storage-control-stream.wb.ru/*"],
+  "action": {
+    "default_title": "Sync WBStream session",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://storage-control-stream.wb.ru/*"],
+      "js": ["lib/export-format.js", "content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@whitetransport/native-gui",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "description": "Wails host for the shared WhiteTransport client-web bundle.",
+  "scripts": {
+    "build": "npm --prefix ../client-web run build && node scripts/sync-client-web-dist.mjs",
+    "typecheck": "npm --prefix ../client-web run typecheck",
+    "test": "npm --prefix ../client-web test -- --run",
+    "package": "npm run typecheck && wails build",
+    "package:win": "npm run typecheck && wails build -platform windows/amd64 && ./scripts/ensure-wintun.sh --destination build/bin/wintun.dll && ./scripts/post-build-pack-windows.sh"
+  }
+}

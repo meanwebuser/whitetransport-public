@@ -1,0 +1,45 @@
+{
+  "name": "@whitetransport/web",
+  "version": "0.5.0",
+  "description": "Mobile browser and browser-side WhiteTransport entry point.",
+  "type": "module",
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "build": "npm run sync:transport",
+    "sync:transport": "node scripts/sync-whitetransport-bundle.mjs",
+    "start": "node src/index.js",
+    "format": "prettier --write .",
+    "lint": "eslint ./src/",
+    "lint:fix": "eslint ./src/ --fix",
+    "postinstall": "node scripts/patch-bare-mux-headers.mjs"
+  },
+  "keywords": [
+    "proxy",
+    "whitetransport",
+    "adaptive-transport"
+  ],
+  "author": "meanwebuser",
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "@whitetransport/browser-transport": "0.1.0",
+    "@fastify/static": "^9.0.0",
+    "@mercuryworkshop/bare-mux": "^2.1.9",
+    "@mercuryworkshop/epoxy-transport": "^3.0.1",
+    "@mercuryworkshop/libcurl-transport": "^2.0.5",
+    "@mercuryworkshop/scramjet": "2.0.67-alpha.1",
+    "@mercuryworkshop/scramjet-controller": "^0.0.13",
+    "@mercuryworkshop/wisp-js": "^0.4.1",
+    "@titaniumnetwork-dev/ultraviolet": "3.2.10",
+    "fastify": "^5.7.4",
+    "scramjet-v1": "npm:@mercuryworkshop/scramjet@1.1.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "eslint": "^9.13.0",
+    "prettier": "^3.3.3"
+  },
+  "packageManager": "pnpm@10.18.3"
+}
