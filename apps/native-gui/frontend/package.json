@@ -1,0 +1,12 @@
+{
+  "name": "@whitetransport/native-gui-frontend-host",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npm --prefix ../../client-web run build:bundle && node ../scripts/sync-client-web-dist.mjs",
+    "test": "npm --prefix ../../client-web test -- --run",
+    "typecheck": "npm --prefix ../../client-web run typecheck",
+    "dev": "npm --prefix ../../client-web run dev"
+  }
+}

@@ -1,0 +1,736 @@
+/* Shared native shell ---------------------------------------------------- */
+.shell-app {
+  --shell-bg: #151515;
+  --shell-surface: #202020;
+  --shell-surface-raised: #292929;
+  --shell-border: rgba(255, 255, 255, 0.1);
+  --shell-text: #f2f2f2;
+  --shell-muted: #a7a7a7;
+  --shell-accent: #26c6da;
+  --shell-success: #2bd66b;
+  --shell-warning: #f2ad4b;
+  --shell-danger: #f16b6b;
+  min-height: 100dvh;
+  color: var(--shell-text);
+  background:
+    radial-gradient(circle at 50% -12%, rgba(38, 198, 218, 0.12), transparent 42%),
+    var(--shell-bg);
+}
+
+.shell-main {
+  width: min(100%, 980px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 28px 24px 116px;
+}
+
+.shell-screen {
+  width: min(100%, 720px);
+  margin: 0 auto;
+}
+
+.shell-screen__header,
+.shell-card-heading,
+.shell-section-intro,
+.shell-endpoint-row__title,
+.shell-endpoint-meta,
+.shell-inline-actions,
+.shell-log-path {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.shell-screen__header {
+  min-height: 62px;
+  margin-bottom: 24px;
+}
+
+.shell-screen__header h1,
+.shell-card-heading h2,
+.shell-endpoint-row__title h2 {
+  margin: 0;
+  color: var(--shell-text);
+  font-weight: 680;
+  letter-spacing: -0.02em;
+}
+
+.shell-screen__header h1 {
+  font-size: clamp(1.55rem, 2.5vw, 2rem);
+}
+
+.shell-card-heading h2 {
+  font-size: 1.06rem;
+}
+
+.shell-eyebrow,
+.shell-card-kicker {
+  margin: 0 0 4px;
+  color: var(--shell-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.shell-header-icon {
+  color: var(--shell-accent);
+}
+
+.shell-status-chip,
+.shell-supported-badge,
+.shell-availability,
+.shell-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.shell-status-chip--connected,
+.shell-availability--online,
+.shell-supported-badge {
+  color: var(--shell-success);
+  background: rgba(43, 214, 107, 0.12);
+}
+
+.shell-status-chip--connecting,
+.shell-status-chip--disconnecting {
+  color: var(--shell-accent);
+  background: rgba(38, 198, 218, 0.12);
+}
+
+.shell-status-chip--permission_required,
+.shell-status-chip--degraded,
+.shell-status-chip--error,
+.shell-availability--degraded {
+  color: var(--shell-warning);
+  background: rgba(242, 173, 75, 0.12);
+}
+
+.shell-status-chip--disconnected,
+.shell-availability--offline {
+  color: var(--shell-muted);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.shell-power-wrap {
+  display: grid;
+  justify-items: center;
+  margin: clamp(22px, 6vh, 72px) 0 26px;
+}
+
+.shell-power-button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 164px;
+  height: 164px;
+  border: 0;
+  border-radius: 50%;
+  color: var(--shell-text);
+  background: #2a2a2a;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.shell-power-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: #303030;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.42), 0 0 0 8px rgba(38, 198, 218, 0.06);
+}
+
+.shell-power-button:focus-visible,
+.shell-icon-button:focus-visible,
+.shell-nav-item:focus-visible,
+.shell-select-button:focus-visible,
+.shell-primary-button:focus-visible,
+.shell-secondary-button:focus-visible,
+.shell-text-button:focus-visible,
+.shell-field input:focus-visible,
+.shell-field select:focus-visible,
+.shell-field textarea:focus-visible,
+.shell-select-wrap select:focus-visible {
+  outline: 2px solid var(--shell-accent);
+  outline-offset: 3px;
+}
+
+.shell-diagnostics-details summary:focus-visible {
+  outline: 2px solid var(--shell-accent);
+  outline-offset: 3px;
+}
+
+.shell-power-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.shell-power-button--connected {
+  color: #0b1a11;
+  background: var(--shell-success);
+  box-shadow: 0 18px 44px rgba(43, 214, 107, 0.2), 0 0 0 8px rgba(43, 214, 107, 0.08);
+}
+
+.shell-power-button__halo {
+  position: absolute;
+  inset: -12px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.12;
+}
+
+.shell-power-button__icon,
+.shell-power-button__label {
+  position: relative;
+  z-index: 1;
+}
+
+.shell-power-button__label {
+  margin-top: -32px;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.shell-power-hint {
+  margin: 14px 0 0;
+  color: var(--shell-muted);
+  font-size: 0.82rem;
+}
+
+.shell-endpoint-card,
+.shell-settings-card,
+.shell-endpoint-row,
+.shell-empty-state,
+.shell-setup-alert,
+.shell-inline-alert {
+  border: 1px solid var(--shell-border);
+  border-radius: 18px;
+  background: var(--shell-surface);
+}
+
+.shell-endpoint-card,
+.shell-settings-card {
+  padding: 18px;
+}
+
+.shell-endpoint-card {
+  margin-bottom: 14px;
+}
+
+.shell-select-wrap {
+  position: relative;
+  display: block;
+  margin-top: 16px;
+}
+
+.shell-select-wrap select,
+.shell-field select,
+.shell-field input,
+.shell-field textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--shell-border);
+  border-radius: 12px;
+  padding: 10px 38px 10px 12px;
+  color: var(--shell-text);
+  background-color: var(--shell-surface-raised);
+  color-scheme: dark;
+  font: inherit;
+}
+
+.shell-select-wrap > svg {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: var(--shell-muted);
+  pointer-events: none;
+}
+
+.shell-endpoint-meta {
+  margin-top: 13px;
+  color: var(--shell-muted);
+  font-size: 0.78rem;
+}
+
+.shell-text-button {
+  border: 0;
+  padding: 0;
+  color: var(--shell-accent);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.shell-diagnostics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--shell-border);
+  border-radius: 14px;
+  background: var(--shell-border);
+}
+
+.shell-diagnostics > div {
+  min-width: 0;
+  padding: 11px 12px;
+  background: var(--shell-surface);
+}
+
+.shell-diagnostics dt,
+.shell-details-list dt {
+  color: var(--shell-muted);
+  font-size: 0.7rem;
+}
+
+.shell-diagnostics dd,
+.shell-details-list dd {
+  margin: 4px 0 0;
+  overflow: hidden;
+  color: var(--shell-text);
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shell-setup-alert,
+.shell-inline-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 13px 15px;
+  color: var(--shell-warning);
+}
+
+.shell-setup-alert p {
+  margin: 4px 0 0;
+  color: var(--shell-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.shell-inline-alert {
+  color: var(--shell-warning);
+  font-size: 0.82rem;
+}
+
+.shell-inline-alert span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.shell-muted {
+  color: var(--shell-muted);
+  font-size: 0.84rem;
+}
+
+.shell-health-dot,
+.shell-capability-dot {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--shell-muted);
+}
+
+.shell-health-dot--healthy,
+.shell-capability-dot--on {
+  background: var(--shell-success);
+  box-shadow: 0 0 0 4px rgba(43, 214, 107, 0.12);
+}
+
+.shell-health-dot--degraded {
+  background: var(--shell-warning);
+}
+
+.shell-endpoints .shell-section-intro {
+  margin-bottom: 14px;
+  color: var(--shell-muted);
+  font-size: 0.85rem;
+}
+
+.shell-section-intro p {
+  max-width: 530px;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.shell-count {
+  padding: 5px 8px;
+  background: var(--shell-surface-raised);
+}
+
+.shell-icon-button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--shell-border);
+  border-radius: 50%;
+  color: var(--shell-text);
+  background: var(--shell-surface);
+  cursor: pointer;
+}
+
+.shell-icon-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.shell-endpoint-list {
+  display: grid;
+  gap: 10px;
+}
+
+.shell-endpoint-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.shell-endpoint-row--selected {
+  border-color: rgba(38, 198, 218, 0.58);
+  background: rgba(38, 198, 218, 0.08);
+}
+
+.shell-endpoint-row__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  color: var(--shell-accent);
+  background: rgba(38, 198, 218, 0.1);
+}
+
+.shell-endpoint-row__body {
+  min-width: 0;
+}
+
+.shell-endpoint-row__title {
+  justify-content: flex-start;
+  gap: 9px;
+}
+
+.shell-endpoint-row__title h2 {
+  font-size: 0.97rem;
+}
+
+.shell-endpoint-row__body p {
+  margin: 4px 0;
+  color: var(--shell-muted);
+  font-size: 0.76rem;
+}
+
+.shell-endpoint-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--shell-muted);
+  font-size: 0.7rem;
+}
+
+.shell-endpoint-row__meta span {
+  border-radius: 999px;
+  padding: 3px 6px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.shell-select-button,
+.shell-primary-button,
+.shell-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  border: 1px solid var(--shell-border);
+  border-radius: 10px;
+  padding: 7px 11px;
+  color: var(--shell-text);
+  background: var(--shell-surface-raised);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.shell-select-button[aria-pressed='true'],
+.shell-primary-button {
+  border-color: transparent;
+  color: #081519;
+  background: var(--shell-accent);
+}
+
+.shell-select-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.shell-diagnostics-details {
+  margin-top: 14px;
+  border: 1px solid var(--shell-border);
+  border-radius: 15px;
+  background: var(--shell-surface);
+}
+
+.shell-diagnostics-details summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  color: var(--shell-text);
+  font-size: 0.84rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.shell-diagnostics-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.shell-details-content {
+  padding: 0 16px 16px;
+}
+
+.shell-field {
+  display: grid;
+  gap: 6px;
+  color: var(--shell-muted);
+  font-size: 0.75rem;
+}
+
+.shell-settings {
+  display: grid;
+  gap: 14px;
+}
+
+.shell-settings .shell-screen__header {
+  margin-bottom: 2px;
+}
+
+.shell-capability-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.shell-capability-indicator {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--shell-border);
+  border-radius: 11px;
+  padding: 9px;
+  color: var(--shell-muted);
+  font-size: 0.72rem;
+}
+
+.shell-capability-indicator strong {
+  grid-column: 2;
+  color: var(--shell-text);
+  font-size: 0.75rem;
+}
+
+.shell-field {
+  margin-top: 16px;
+}
+
+.shell-field select,
+.shell-field textarea {
+  padding-right: 12px;
+}
+
+.shell-field textarea {
+  resize: vertical;
+}
+
+.shell-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 13px;
+  color: var(--shell-muted);
+  font-size: 0.8rem;
+}
+
+.shell-checkbox-row input {
+  accent-color: var(--shell-accent);
+}
+
+.shell-log-path {
+  align-items: flex-start;
+  margin: 15px 0 12px;
+  color: var(--shell-muted);
+  font-size: 0.75rem;
+}
+
+.shell-log-path span {
+  flex: 0 0 auto;
+}
+
+.shell-log-path code {
+  overflow-wrap: anywhere;
+  color: var(--shell-text);
+  text-align: right;
+}
+
+.shell-inline-actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.shell-log-lines {
+  max-height: 240px;
+  margin: 13px 0 0;
+  overflow: auto;
+  border-radius: 10px;
+  padding: 12px;
+  color: #d4f8df;
+  background: #101010;
+  font: 0.71rem/1.55 var(--font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.shell-details-content p {
+  margin: 0 0 14px;
+  color: var(--shell-muted);
+  font-size: 0.79rem;
+  line-height: 1.5;
+}
+
+.shell-details-list {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+}
+
+.shell-details-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shell-details-list dd {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.shell-bottom-nav {
+  position: fixed;
+  z-index: 10;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 10px 18px max(10px, env(safe-area-inset-bottom));
+  background: rgba(21, 21, 21, 0.9);
+  border-top: 1px solid var(--shell-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.shell-bottom-nav__inner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 620px);
+  margin: 0 auto;
+}
+
+.shell-nav-item {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  border: 0;
+  border-radius: 12px;
+  padding: 7px 5px 5px;
+  color: var(--shell-muted);
+  background: transparent;
+  font: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.shell-nav-item--active {
+  color: var(--shell-accent);
+  background: rgba(38, 198, 218, 0.08);
+}
+
+.shell-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  padding: 32px 20px;
+  color: var(--shell-muted);
+  text-align: center;
+}
+
+.shell-empty-state strong {
+  color: var(--shell-text);
+}
+
+.shell-empty-state p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.shell-spin {
+  animation: shell-spin 1s linear infinite;
+}
+
+@keyframes shell-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .shell-main {
+    padding: 20px 14px 110px;
+  }
+
+  .shell-screen__header {
+    margin-bottom: 16px;
+  }
+
+  .shell-power-wrap {
+    margin: 30px 0 22px;
+  }
+
+  .shell-power-button {
+    width: 146px;
+    height: 146px;
+  }
+
+  .shell-diagnostics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shell-capability-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shell-endpoint-row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .shell-select-button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

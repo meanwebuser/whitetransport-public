@@ -1,0 +1,6 @@
+{
+  "session_id": "sess-123",
+  "status": "busy",
+  "retry_after": 30000000000,
+  "error": "node busy"
+}

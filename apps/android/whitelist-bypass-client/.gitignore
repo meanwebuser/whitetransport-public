@@ -1,0 +1,15 @@
+*.iml
+.gradle
+/local.properties
+.idea/
+.DS_Store
+/build
+/capacitor-cordova-android-plugins/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+debug.keystore
+app/libs/wt-runtime.aar
+app/libs/wt-runtime-sources.jar
+app/src/main/assets/wt-runtime-config.json

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y Transport — VK Browser Bridge</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: #12121a;
+            --border: #2a2a3a;
+            --accent: #4a76a8;
+            --accent2: #6c5ce7;
+            --text: #e0e0e0;
+            --text-dim: #888;
+            --success: #00b894;
+            --error: #e74c3c;
+            --warning: #fdcb6e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: var(--accent); font-size: 24px; margin-bottom: 4px; }
+        .subtitle { color: var(--text-dim); font-size: 13px; margin-bottom: 20px; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .card h2 { color: var(--accent2); font-size: 16px; margin-bottom: 12px; }
+        .status-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.connected { background: var(--success); color: #000; }
+        .status-badge.disconnected { background: var(--error); color: #fff; }
+        .status-badge.pending { background: var(--warning); color: #000; }
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        input:focus { border-color: var(--accent); outline: none; }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: #3d6490; }
+        .btn-secondary { background: var(--border); color: var(--text); }
+        .btn-secondary:hover { background: #3a3a4a; }
+        .btn-danger { background: var(--error); color: #fff; }
+        .btn-small { padding: 6px 12px; font-size: 11px; }
+        .btn-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+        .log {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+        .log-entry { margin-bottom: 2px; }
+        .log-time { color: var(--text-dim); }
+        .log-info { color: var(--accent); }
+        .log-success { color: var(--success); }
+        .log-error { color: var(--error); }
+        .log-data { color: var(--warning); }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .stat {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+        }
+        .stat-value { font-size: 20px; font-weight: 700; color: var(--accent); }
+        .stat-label { font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+        .msg-item {
+            padding: 8px 12px;
+            border-left: 3px solid var(--accent);
+            margin-bottom: 6px;
+            background: var(--bg);
+            border-radius: 0 4px 4px 0;
+            font-size: 12px;
+        }
+        .msg-item .msg-meta { color: var(--text-dim); font-size: 10px; }
+        .msg-item .msg-text { color: var(--text); word-break: break-all; margin-top: 4px; }
+        a { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+
+        // ── VK API Client (JSONP-based, from vk-browser) ─────────────────
+
+        class VKAPIClient {
+            constructor(accessToken, apiVersion = '5.131') {
+                this.accessToken = accessToken;
+                this.apiVersion = apiVersion;
+                this.userId = null;
+                this.lastMessageId = 0;
+                this.isPolling = false;
+            }
+
+            jsonpRequest(method, params) {
+                return new Promise((resolve, reject) => {
+                    const callbackName = 'vkCB' + Math.round(Math.random() * 1000000);
+                    const script = document.createElement('script');
+
+                    window[callbackName] = (response) => {
+                        delete window[callbackName];
+                        if (script.parentNode) document.body.removeChild(script);
+                        if (response.error) {
+                            reject(response.error);
+                        } else {
+                            resolve(response.response);
+                        }
+                    };
+
+                    const url = new URL(`https://api.vk.com/method/${method}`);
+                    url.searchParams.append('access_token', this.accessToken);
+                    url.searchParams.append('v', this.apiVersion);
+                    url.searchParams.append('callback', callbackName);
+
+                    Object.keys(params).forEach(key => {
+                        if (params[key] !== undefined && params[key] !== null) {
+                            url.searchParams.append(key, String(params[key]));
+                        }
+                    });
+
+                    script.src = url.toString();
+                    script.onerror = () => {
+                        delete window[callbackName];
+                        if (script.parentNode) document.body.removeChild(script);
+                        reject(new Error('Network error'));
+                    };
+
+                    document.body.appendChild(script);
+                });
+            }
+
+            async getCurrentUser() {
+                const response = await this.jsonpRequest('users.get', {});
+                if (response && response[0]) {
+                    this.userId = response[0].id;
+                    return response[0];
+                }
+                throw new Error('Failed to get user info');
+            }
+
+            async sendMessage(peerId, text) {
+                const response = await this.jsonpRequest('messages.send', {
+                    peer_id: peerId,
+                    message: text,
+                    random_id: Math.floor(Math.random() * 2147483647),
+                });
+                return response;
+            }
+
+            async getHistory(peerId, count = 20) {
+                const response = await this.jsonpRequest('messages.getHistory', {
+                    peer_id: peerId,
+                    count: count,
+                });
+                return response.items || [];
+            }
+
+            startPolling(peerId, onMessage, interval = 1500) {
+                this.isPolling = true;
+                const poll = async () => {
+                    if (!this.isPolling) return;
+                    try {
+                        const params = { peer_id: peerId, count: 20 };
+                        if (this.lastMessageId > 0) {
+                            params.start_message_id = this.lastMessageId;
+                        }
+                        const response = await this.jsonpRequest('messages.getHistory', params);
+                        if (response && response.items) {
+                            const messages = this.lastMessageId > 0 ? response.items.reverse() : response.items;
+                            const newMessages = messages.filter(msg => msg.id > this.lastMessageId);
+                            if (newMessages.length > 0) {
+                                this.lastMessageId = Math.max(...newMessages.map(m => m.id));
+                                newMessages.forEach(msg => onMessage({
+                                    id: String(msg.id),
+                                    timestamp: msg.date * 1000,
+                                    text: msg.text || '',
+                                    fromSelf: msg.from_id === this.userId,
+                                    fromId: msg.from_id,
+                                }));
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Polling error:', error);
+                    }
+                    if (this.isPolling) {
+                        setTimeout(poll, interval);
+                    }
+                };
+                poll();
+            }
+
+            stopPolling() {
+                this.isPolling = false;
+            }
+        }
+
+        // ── Constants ────────────────────────────────────────────────────
+
+        const KATE_MOBILE_APP_ID = '2685278';
+        const SCOPE = '1073737727';
+        const REDIRECT_URI = 'https://oauth.vk.com/blank.html';
+        const DEFAULT_WS_URL = 'ws://localhost:9123/bridge';
+
+        // ── App Component ────────────────────────────────────────────────
+
+        function App() {
+            const [vkToken, setVkToken] = useState('');
+            const [peerId, setPeerId] = useState('');
+            const [wsUrl, setWsUrl] = useState(DEFAULT_WS_URL);
+            const [vkStatus, setVkStatus] = useState('disconnected');
+            const [wsStatus, setWsStatus] = useState('disconnected');
+            const [user, setUser] = useState(null);
+            const [logs, setLogs] = useState([]);
+            const [messages, setMessages] = useState([]);
+            const [stats, setStats] = useState({ sent: 0, received: 0, errors: 0, uptime: 0 });
+
+            const vkRef = useRef(null);
+            const wsRef = useRef(null);
+            const startTimeRef = useRef(null);
+            const logsEndRef = useRef(null);
+
+            const addLog = useCallback((text, type = 'info') => {
+                setLogs(prev => [...prev.slice(-200), {
+                    time: new Date().toLocaleTimeString(),
+                    text,
+                    type,
+                }]);
+            }, []);
+
+            // ── VK Authentication ─────────────────────────────────────────
+
+            const loginWithKate = () => {
+                const authUrl = `https://oauth.vk.com/authorize?client_id=${KATE_MOBILE_APP_ID}&scope=${SCOPE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&display=page&response_type=token&revoke=1`;
+                window.open(authUrl, '_blank');
+                addLog('Opened VK OAuth page. After auth, copy the URL and paste below.', 'info');
+            };
+
+            const connectVK = async () => {
+                if (!vkToken) return;
+                addLog('Connecting to VK...', 'info');
+                setVkStatus('pending');
+
+                try {
+                    const client = new VKAPIClient(vkToken);
+                    const userInfo = await client.getCurrentUser();
+                    vkRef.current = client;
+                    setUser(userInfo);
+                    setVkStatus('connected');
+                    addLog(`VK connected: ${userInfo.first_name} ${userInfo.last_name} (ID: ${userInfo.id})`, 'success');
+
+                    // Save token
+                    localStorage.setItem('ytp_vk_token', vkToken);
+
+                    // Load history
+                    const effectivePeerId = peerId || String(userInfo.id);
+                    setPeerId(effectivePeerId);
+
+                    const history = await client.getHistory(Number(effectivePeerId), 10);
+                    if (history.length > 0) {
+                        client.lastMessageId = Math.max(...history.map(m => m.id));
+                        addLog(`Loaded ${history.length} messages, last ID: ${client.lastMessageId}`, 'info');
+                    }
+
+                    // Start polling
+                    client.startPolling(Number(effectivePeerId), (msg) => {
+                        addMessage(msg);
+                        addLog(`VK msg: ${msg.text.slice(0, 60)}${msg.text.length > 60 ? '...' : ''}`, 'data');
+
+                        // Forward to WebSocket bridge
+                        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                            wsRef.current.send(JSON.stringify({
+                                type: 'messages',
+                                data: { messages: [msg] },
+                            }));
+                        }
+
+                        setStats(prev => ({ ...prev, received: prev.received + 1 }));
+                    }, 1500);
+
+                    addLog('VK polling started', 'success');
+
+                    // Auto-connect WebSocket
+                    if (wsStatus === 'disconnected') {
+                        connectWS();
+                    }
+                } catch (err) {
+                    setVkStatus('disconnected');
+                    addLog(`VK error: ${err.message}`, 'error');
+                    setStats(prev => ({ ...prev, errors: prev.errors + 1 }));
+                }
+            };
+
+            const disconnectVK = () => {
+                if (vkRef.current) {
+                    vkRef.current.stopPolling();
+                    vkRef.current = null;
+                }
+                setVkStatus('disconnected');
+                setUser(null);
+                addLog('VK disconnected', 'info');
+            };
+
+            // ── WebSocket Bridge ──────────────────────────────────────────
+
+            const connectWS = () => {
+                addLog(`Connecting to bridge: ${wsUrl}`, 'info');
+                setWsStatus('pending');
+
+                try {
+                    const ws = new WebSocket(wsUrl);
+                    wsRef.current = ws;
+
+                    ws.onopen = () => {
+                        setWsStatus('connected');
+                        startTimeRef.current = Date.now();
+                        ws.send(JSON.stringify({ type: 'connected', data: { provider: 'vk-bridge' } }));
+                        addLog('Bridge WebSocket connected', 'success');
+                    };
+
+                    ws.onmessage = async (event) => {
+                        try {
+                            const msg = JSON.parse(event.data);
+                            addLog(`Bridge ← ${msg.type}`, 'data');
+
+                            if (msg.type === 'append' && vkRef.current) {
+                                // Send message via VK
+                                try {
+                                    const result = await vkRef.current.sendMessage(
+                                        Number(peerId),
+                                        msg.data.text
+                                    );
+                                    ws.send(JSON.stringify({
+                                        type: 'ack',
+                                        data: { msgId: msg.data.msgId, messageId: String(result), timestamp: Date.now() },
+                                    }));
+                                    setStats(prev => ({ ...prev, sent: prev.sent + 1 }));
+                                    addLog(`Sent via VK: msg_id=${result}`, 'success');
+                                } catch (err) {
+                                    ws.send(JSON.stringify({
+                                        type: 'error',
+                                        data: { msgId: msg.data.msgId, error: err.message },
+                                    }));
+                                    setStats(prev => ({ ...prev, errors: prev.errors + 1 }));
+                                    addLog(`Send error: ${err.message}`, 'error');
+                                }
+                            }
+
+                            if (msg.type === 'scan' && vkRef.current) {
+                                // Scan handled by polling — just send current buffer
+                                // The polling already forwards messages to bridge
+                            }
+                        } catch (err) {
+                            addLog(`Parse error: ${err.message}`, 'error');
+                        }
+                    };
+
+                    ws.onclose = () => {
+                        setWsStatus('disconnected');
+                        addLog('Bridge disconnected', 'info');
+                        // Auto-reconnect after 5s
+                        setTimeout(() => {
+                            if (vkRef.current) connectWS();
+                        }, 5000);
+                    };
+
+                    ws.onerror = () => {
+                        setWsStatus('disconnected');
+                        addLog('Bridge connection failed', 'error');
+                    };
+                } catch (err) {
+                    setWsStatus('disconnected');
+                    addLog(`WS error: ${err.message}`, 'error');
+                }
+            };
+
+            // ── Message handling ──────────────────────────────────────────
+
+            const addMessage = (msg) => {
+                setMessages(prev => {
+                    if (prev.some(m => m.id === msg.id)) return prev;
+                    return [...prev.slice(-100), msg];
+                });
+            };
+
+            // ── Token extraction ──────────────────────────────────────────
+
+            const handleTokenInput = (value) => {
+                if (value.includes('#access_token=')) {
+                    const match = value.match(/#access_token=([^&]+)/);
+                    if (match && match[1]) {
+                        setVkToken(match[1]);
+                        addLog('Token extracted from URL', 'success');
+                        return;
+                    }
+                }
+                if (value.includes('access_token=')) {
+                    const match = value.match(/access_token=([^&]+)/);
+                    if (match && match[1]) {
+                        setVkToken(match[1]);
+                        addLog('Token extracted from URL', 'success');
+                        return;
+                    }
+                }
+                setVkToken(value);
+            };
+
+            // ── Load saved token ──────────────────────────────────────────
+
+            useEffect(() => {
+                const saved = localStorage.getItem('ytp_vk_token');
+                if (saved) {
+                    setVkToken(saved);
+                    addLog('Found saved VK token', 'info');
+                }
+                const savedPeer = localStorage.getItem('ytp_vk_peer');
+                if (savedPeer) setPeerId(savedPeer);
+                const savedWs = localStorage.getItem('ytp_ws_url');
+                if (savedWs) setWsUrl(savedWs);
+            }, []);
+
+            useEffect(() => {
+                logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }, [logs]);
+
+            // Uptime timer
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    if (startTimeRef.current) {
+                        setStats(prev => ({
+                            ...prev,
+                            uptime: Math.floor((Date.now() - startTimeRef.current) / 1000),
+                        }));
+                    }
+                }, 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const formatUptime = (s) => {
+                const h = Math.floor(s / 3600);
+                const m = Math.floor((s % 3600) / 60);
+                const sec = s % 60;
+                return `${h}h ${m}m ${sec}s`;
+            };
+
+            // ── Render ────────────────────────────────────────────────────
+
+            return (
+                <div className="container">
+                    <h1>Y Transport — VK Browser Bridge</h1>
+                    <p className="subtitle">
+                        Browser-based VK transport for YTP •
+                        <a href="https://github.com/meanwebuser/anYTransportProxy" target="_blank"> GitHub</a>
+                    </p>
+
+                    <div className="status-bar">
+                        <span className={`status-badge ${vkStatus}`}>
+                            VK: {vkStatus}
+                        </span>
+                        <span className={`status-badge ${wsStatus}`}>
+                            Bridge: {wsStatus}
+                        </span>
+                        {user && <span style={{color: 'var(--text-dim)', fontSize: '12px'}}>
+                            {user.first_name} {user.last_name}
+                        </span>}
+                    </div>
+
+                    <div className="stats">
+                        <div className="stat">
+                            <div className="stat-value">{stats.sent}</div>
+                            <div className="stat-label">Sent</div>
+                        </div>
+                        <div className="stat">
+                            <div className="stat-value">{stats.received}</div>
+                            <div className="stat-label">Received</div>
+                        </div>
+                        <div className="stat">
+                            <div className="stat-value">{stats.errors}</div>
+                            <div className="stat-label">Errors</div>
+                        </div>
+                        <div className="stat">
+                            <div className="stat-value">{formatUptime(stats.uptime)}</div>
+                            <div className="stat-label">Uptime</div>
+                        </div>
+                    </div>
+
+                    {/* VK Auth */}
+                    <div className="card">
+                        <h2>VK Authentication</h2>
+                        {vkStatus !== 'connected' ? (
+                            <>
+                                <p style={{fontSize: '12px', color: 'var(--text-dim)', marginBottom: '8px'}}>
+                                    Uses Kate Mobile OAuth (app_id: {KATE_MOBILE_APP_ID})
+                                </p>
+                                <button className="btn-primary" onClick={loginWithKate}>
+                                    Login with Kate Mobile
+                                </button>
+                                <input
+                                    type="text"
+                                    placeholder="Paste URL with access_token or enter token directly"
+                                    value={vkToken}
+                                    onChange={(e) => handleTokenInput(e.target.value)}
+                                    style={{marginTop: '12px'}}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Peer ID (user or chat)"
+                                    value={peerId}
+                                    onChange={(e) => setPeerId(e.target.value)}
+                                />
+                                <div className="btn-row">
+                                    <button className="btn-primary" onClick={connectVK} disabled={!vkToken}>
+                                        Connect VK
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="btn-row">
+                                <button className="btn-danger btn-small" onClick={disconnectVK}>
+                                    Disconnect VK
+                                </button>
+                                <button className="btn-secondary btn-small" onClick={() => {
+                                    localStorage.removeItem('ytp_vk_token');
+                                    setVkToken('');
+                                }}>
+                                    Clear Token
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* WebSocket Bridge */}
+                    <div className="card">
+                        <h2>WebSocket Bridge</h2>
+                        <p style={{fontSize: '12px', color: 'var(--text-dim)', marginBottom: '8px'}}>
+                            Connects this page to the Y Transport Node.js server
+                        </p>
+                        <input
+                            type="text"
+                            placeholder="WebSocket URL"
+                            value={wsUrl}
+                            onChange={(e) => setWsUrl(e.target.value)}
+                        />
+                        <div className="btn-row">
+                            {wsStatus !== 'connected' ? (
+                                <button className="btn-primary" onClick={connectWS}>
+                                    Connect Bridge
+                                </button>
+                            ) : (
+                                <button className="btn-danger btn-small" onClick={() => {
+                                    if (wsRef.current) wsRef.current.close();
+                                }}>
+                                    Disconnect Bridge
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Recent Messages */}
+                    <div className="card">
+                        <h2>Recent Messages ({messages.length})</h2>
+                        <div style={{maxHeight: '200px', overflowY: 'auto'}}>
+                            {messages.slice(-20).reverse().map(msg => (
+                                <div key={msg.id} className="msg-item">
+                                    <div className="msg-meta">
+                                        {msg.fromSelf ? '→ Sent' : '← Received'} • ID: {msg.id} • {new Date(msg.timestamp).toLocaleTimeString()}
+                                    </div>
+                                    <div className="msg-text">{msg.text.slice(0, 200)}{msg.text.length > 200 ? '...' : ''}</div>
+                                </div>
+                            ))}
+                            {messages.length === 0 && <div style={{color: 'var(--text-dim)', fontSize: '12px'}}>No messages yet</div>}
+                        </div>
+                    </div>
+
+                    {/* Logs */}
+                    <div className="card">
+                        <h2>Logs</h2>
+                        <div className="log">
+                            {logs.map((log, i) => (
+                                <div key={i} className="log-entry">
+                                    <span className="log-time">{log.time}</span>{' '}
+                                    <span className={`log-${log.type}`}>{log.text}</span>
+                                </div>
+                            ))}
+                            <div ref={logsEndRef} />
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
