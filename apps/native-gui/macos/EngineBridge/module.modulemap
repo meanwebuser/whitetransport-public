@@ -1,0 +1,4 @@
+module WhiteTransportTun2SocksC {
+    header "WhiteTransportTun2Socks.h"
+    export *
+}

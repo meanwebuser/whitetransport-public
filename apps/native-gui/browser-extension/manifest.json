@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "WhiteTransport",
+  "version": "0.1.8",
+  "description": "Sends supported browser sessions to the paired local WhiteTransport client.",
+  "permissions": ["activeTab", "alarms", "cookies", "downloads", "scripting", "storage", "tabs"],
+  "host_permissions": [
+    "https://telemost.yandex.ru/*",
+    "https://dion.vc/*",
+    "https://api.dion.vc/*",
+    "https://vk.com/*",
+    "https://vk.ru/*",
+    "http://127.0.0.1/*"
+  ],
+  "action": {
+    "default_title": "WhiteTransport",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://telemost.yandex.ru/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

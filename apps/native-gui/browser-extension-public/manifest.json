@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "WhiteTransport Telemost Link",
+  "version": "0.1.0",
+  "description": "Копирует ссылку активной вкладки на официальный Yandex Telemost по явному нажатию.",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_title": "Скопировать ссылку Telemost",
+    "default_popup": "popup.html"
+  }
+}

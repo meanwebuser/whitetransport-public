@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+commit="$(git rev-parse HEAD)"
+runs_dir="${WT_POST_COMMIT_RUNS_DIR:-$repo_root/output/post-commit-runs}"
+mkdir -p "$runs_dir"
+launch_log="$runs_dir/launch-${commit:0:7}-$(date -u +%Y%m%dT%H%M%SZ).log"
+nohup setsid -f "$repo_root/ops/tools/post-commit-checks.sh" --sync --commit "$commit" >"$launch_log" 2>&1 </dev/null &
+echo "$!" >"$runs_dir/.latest.pid"

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:id="@+id/tabContainerWrap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/tabContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/subPageContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/surface_bg"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/joinOverlayContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/panel_bg"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/bottomWrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/panel_bg">
+
+        <include
+            android:id="@+id/bottomNav"
+            layout="@layout/view_bottom_nav" />
+
+        <include
+            android:id="@+id/overlayLogs"
+            layout="@layout/view_overlay_logs"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

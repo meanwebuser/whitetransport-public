@@ -1,0 +1,8 @@
+{
+	"appId": "com.meanwebuser.whitetransport",
+	"appName": "WhiteTransport",
+	"webDir": "dist",
+	"android": {
+		"path": "../android/whitelist-bypass-client"
+	}
+}

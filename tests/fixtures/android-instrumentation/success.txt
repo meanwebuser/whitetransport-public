@@ -1,0 +1,8 @@
+INSTRUMENTATION_STATUS: class=bypass.whitelist.runtime.GoRuntimeInstrumentedTest
+INSTRUMENTATION_STATUS_CODE: 1
+.
+Time: 12.345
+
+OK (1 test)
+
+INSTRUMENTATION_CODE: -1
