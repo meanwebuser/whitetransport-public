@@ -1,0 +1,56 @@
+{
+  "session_id": "sess-123",
+  "client_id": "client-1",
+  "product_version": "0.1.1",
+  "wanted": [
+    "wbstream.vp8",
+    "vk.messages"
+  ],
+  "usable_carriers": [
+    {
+      "ID": "vk.messages",
+      "Provider": "vk",
+      "Mode": "mailbox",
+      "TrafficClasses": [
+        "control",
+        "egress"
+      ],
+      "Capabilities": [
+        "duplex"
+      ],
+      "Limits": {
+        "MaxPayloadBytes": 0,
+        "ChunkPayloadBytes": 0,
+        "SendsPerMinute": 0,
+        "PollsPerMinute": 0,
+        "DailyBytes": 0
+      },
+      "Metrics": {
+        "Healthy": false,
+        "Latency": 0,
+        "BandwidthBPS": 0,
+        "LastOK": "0001-01-01T00:00:00Z",
+        "FailureReason": "",
+        "Reliability": 0,
+        "CostPerMB": 0,
+        "QuotaRemaining": 0
+      },
+      "Notes": ""
+    }
+  ],
+  "reply_endpoints": [
+    {
+      "ID": "ok-reply",
+      "Carrier": "ok.messages",
+      "Address": "chat:C5cbdd516a400",
+      "Metadata": {
+        "scope": "reply"
+      }
+    }
+  ],
+  "expires_at": "2026-06-08T12:00:00Z",
+  "session_key": "eA==",
+  "metadata": {
+    "platform": "desktop"
+  }
+}

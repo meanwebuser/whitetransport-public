@@ -1,0 +1,13 @@
+INSTRUMENTATION_STATUS: class=bypass.whitelist.runtime.GoRuntimeInstrumentedTest
+INSTRUMENTATION_STATUS: wt_stage=runtime.connect
+INSTRUMENTATION_STATUS_CODE: 1
+E
+Time: 150.001
+There was 1 failure:
+1) startsRuntimeDiscoversConnectsAndTransfersSocksPayloadWhenConfigured
+org.junit.runners.model.TestTimedOutException: test timed out after 150000 milliseconds
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+INSTRUMENTATION_CODE: -1

@@ -1,0 +1,4 @@
+INSTRUMENTATION_STATUS: class=bypass.whitelist.runtime.GoRuntimeInstrumentedTest
+INSTRUMENTATION_STATUS: wt_stage=runtime.connect
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_CODE: -1
