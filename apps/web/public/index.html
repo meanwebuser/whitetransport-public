@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ru">
+        <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+                <title>WhiteTransport Browser</title>
+                <link rel="shortcut icon" content="favicon.webp" />
+                <script src="/scramjet/scramjet.js"></script>
+                <script src="/controller/controller.api.js"></script>
+                <script src="/scramjet-v1-classic/scramjet.bundle.classic.js"></script>
+                <script src="/uv/uv.bundle.patched.js?v=20260531_sharedworker1"></script>
+                <script src="/uv/uv.config.js?v=20260531_sharedworker1"></script>
+                <link rel="stylesheet" href="index.css?v=202605310034" />
+                <link rel="stylesheet" href="loaders.css" />
+                <script src="register-sw.js?v=202605302305" defer></script>
+                <script src="search.js" defer></script>
+                <script src="loaders.js" defer></script>
+                <script src="/whitetransport/whitetransport-wb.js?v=202606021414" defer></script>
+                <script type="module" src="index.js?v=202606021802"></script>
+        </head>
+        <body>
+                <main class="shell" id="home-screen">
+                        <section class="favorites" id="favorites-section" hidden>
+                                <div class="section-title">Избранное</div>
+                                <div class="link-grid" id="favorites-list"></div>
+                        </section>
+
+                        <section class="hero" id="hero-card">
+                                <div class="badge">WhiteTransport remote browser</div>
+                                <h1>Личный мобильный браузер</h1>
+                                <p>JS выполняется прямо в браузере телефона. Куки и localStorage живут в этом профиле сайта.</p>
+                        </section>
+
+                        <div class="quick">
+                                <button type="button" data-open-url="https://chatgpt.com/">ChatGPT</button>
+                                <button type="button" data-open-url="https://web.telegram.org/">Telegram Web</button>
+                                <button type="button" data-open-url="https://www.youtube.com/">YouTube</button>
+                        </div>
+
+                        <section class="spoilers" aria-label="Дополнительные ссылки">
+                                <details>
+                                        <summary>AI на всякий</summary>
+                                        <div class="link-grid">
+                                                <button type="button" data-open-url="https://chatgpt.com/">ChatGPT</button>
+                                                <button type="button" data-open-url="https://chat.z.ai/">Z.ai</button>
+                                                <button type="button" data-open-url="https://chat.qwen.ai/">Qwen</button>
+                                                <button type="button" data-open-url="https://chat.deepseek.com/">DeepSeek</button>
+                                                <button type="button" data-open-url="https://grok.com/">Grok</button>
+                                        </div>
+                                </details>
+
+                                <details>
+                                        <summary>Соцсети</summary>
+                                        <div class="link-grid">
+                                                <button type="button" data-open-url="https://www.instagram.com/">Instagram</button>
+                                                <button type="button" data-open-url="https://www.facebook.com/">Facebook</button>
+                                                <button type="button" data-open-url="https://www.tiktok.com/">TikTok</button>
+                                                <button type="button" data-open-url="https://x.com/">X</button>
+                                        </div>
+                                </details>
+
+                                <details>
+                                        <summary>Мессенджеры</summary>
+                                        <div class="link-grid">
+                                                <button type="button" data-open-url="https://web.telegram.org/">Telegram Web</button>
+                                                <button type="button" data-open-url="https://web.whatsapp.com/">WhatsApp Web</button>
+                                                <button type="button" data-open-url="https://discord.com/app">Discord</button>
+                                                <button type="button" data-open-url="https://app.element.io/">Matrix / Element</button>
+                                        </div>
+                                        <p class="hint">Signal web не добавлен: нормального браузерного клиента нет.</p>
+                                </details>
+                        </section>
+
+
+                        <div class="tools">
+                                <a href="/logout">выйти</a>
+                                <span>Открыл сайт — нижняя строка остаётся как у браузера.</span>
+                        </div>
+                        <p id="sj-error"></p>
+                        <pre id="sj-error-code"></pre>
+                </main>
+
+                <div id="browser-stage" hidden></div>
+
+                <section id="debug-console" class="debug-console" hidden aria-label="Консоль">
+                        <header class="debug-console-head">
+                                <strong>console</strong>
+                                <div class="debug-console-actions">
+                                        <button type="button" id="debug-copy">копировать всё</button>
+                                        <button type="button" id="debug-clear">очистить</button>
+                                </div>
+                        </header>
+                        <pre id="debug-log" class="debug-log"></pre>
+                </section>
+
+                <div id="loading-overlay" class="loading-overlay" hidden aria-live="polite" data-loader="cat-cable"></div>
+
+                <!-- Profile modal -->
+                <div id="profile-modal" class="modal-overlay" hidden>
+                        <div class="modal-box">
+                                <div class="modal-header">
+                                        <span class="modal-title">Профили</span>
+                                        <button type="button" id="profile-modal-close" class="modal-close">✕</button>
+                                </div>
+                                <div id="profile-panel" class="profile-panel">
+                                        <div class="profile-current">
+                                                <span>Активный: </span><strong id="profile-active-name">—</strong>
+                                        </div>
+                                        <div id="profile-list" class="profile-list"></div>
+                                        <div class="profile-footer">
+                                                <button type="button" id="profile-new" class="profile-new-btn">+ Новый профиль</button>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+
+                <!-- Bookmark name modal -->
+                <div id="bookmark-modal" class="modal-overlay" hidden>
+                        <div class="modal-box modal-box-sm">
+                                <div class="modal-header">
+                                        <span class="modal-title">Добавить в избранное</span>
+                                        <button type="button" id="bookmark-modal-close" class="modal-close">✕</button>
+                                </div>
+                                <div class="bookmark-form">
+                                        <div class="bookmark-url-preview" id="bookmark-url-preview"></div>
+                                        <input type="text" id="bookmark-name-input" placeholder="Название закладки" autocomplete="off" />
+                                        <button type="button" id="bookmark-save-btn" class="bookmark-save-btn">Сохранить</button>
+                                </div>
+                        </div>
+                </div>
+
+                <!-- Import profile modal -->
+                <div id="import-modal" class="modal-overlay" hidden>
+                        <div class="modal-box modal-box-sm">
+                                <div class="modal-header">
+                                        <span class="modal-title">Импорт профиля</span>
+                                </div>
+                                <div class="import-body">
+                                        <p id="import-info" class="import-info"></p>
+                                        <div class="import-actions">
+                                                <button type="button" id="import-accept" class="import-btn import-accept-btn">Импортировать</button>
+                                                <button type="button" id="import-decline" class="import-btn import-decline-btn">Отмена</button>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+
+                <!-- Server share modal -->
+                <div id="server-share-modal" class="modal-overlay" hidden>
+                        <div class="modal-box">
+                                <div class="modal-header">
+                                        <span class="modal-title">Поделиться (сервер)</span>
+                                        <button type="button" id="server-share-close" class="modal-close">✕</button>
+                                </div>
+                                <div class="server-share-body">
+                                        <p class="server-share-desc">Профиль загружается на сервер. Вы получаете короткую ссылку и ключ управления для отзыва доступа и просмотра статистики.</p>
+                                        <div id="server-share-result" class="server-share-result" hidden>
+                                                <label class="server-share-label">Ссылка для получателя:</label>
+                                                <div class="server-share-link-row">
+                                                        <code id="server-share-url" class="server-share-url"></code>
+                                                        <button type="button" id="server-share-copy" class="server-share-copy-btn">Копировать</button>
+                                                </div>
+                                                <label class="server-share-label">Ключ управления (сохраните!):</label>
+                                                <div class="server-share-link-row">
+                                                        <code id="server-share-owner-key" class="server-share-url"></code>
+                                                        <button type="button" id="server-share-copy-key" class="server-share-copy-btn">Копировать</button>
+                                                </div>
+                                                <div class="server-share-stats" id="server-share-stats"></div>
+                                                <button type="button" id="server-share-revoke" class="server-share-revoke-btn">Отозвать доступ</button>
+                                        </div>
+                                        <div id="server-share-loading" class="server-share-loading">Загрузка профиля на сервер…</div>
+                                </div>
+                        </div>
+                </div>
+
+                <nav class="browser-bar" id="browser-bar" aria-label="Панель браузера">
+                        <button type="button" id="bar-peek" class="bar-peek" title="Развернуть адресную строку" aria-label="Развернуть адресную строку"></button>
+                        <form id="sj-form" class="address-row">
+                                <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
+                                <button type="button" id="nav-menu" class="menu-button" title="Меню" aria-label="Меню">☰</button>
+                                <input id="sj-address" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="URL или поиск" />
+                                <button type="button" id="nav-fav" class="fav-button" title="В избранное">☆</button>
+                        </form>
+                        <div id="settings-menu" class="settings-menu" hidden>
+                                <div class="settings-title">Настройки</div>
+                                <label class="settings-row">
+                                        <span>Консоль</span>
+                                        <input type="checkbox" id="setting-logs" />
+                                </label>
+                                <label class="settings-row" id="setting-log-level-row" hidden>
+                                        <span>Уровень логов</span>
+                                        <select id="setting-log-level">
+                                                <option value="debug">debug — всё</option>
+                                                <option value="info">info</option>
+                                                <option value="warn">warn</option>
+                                                <option value="error">error</option>
+                                        </select>
+                                </label>
+                                <label class="settings-row">
+                                        <span>Бар</span>
+                                        <select id="setting-bar-position">
+                                                <option value="bottom">снизу</option>
+                                                <option value="top">сверху</option>
+                                        </select>
+                                </label>
+                                <label class="settings-row">
+                                        <span>Автоскрывать</span>
+                                        <input type="checkbox" id="setting-autohide" />
+                                </label>
+                                <label class="settings-row">
+                                        <span>Анимация загрузки</span>
+                                        <input type="checkbox" id="setting-loading-animation" />
+                                </label>
+                                <label class="settings-row">
+                                        <span>Транспорт</span>
+                                        <select id="setting-transport">
+                                                <option value="wb">WB/LiveKit</option>
+                                                <option value="wisp">Scramjet v2 / Wisp</option>
+                                                <option value="scramjet-v1">Scramjet v1</option>
+                                                <option value="ultraviolet">Ultraviolet</option>
+                                                <option value="render">Серверный браузер</option>
+                                                <option value="anticors">Anti-CORS /web</option>
+                                        </select>
+                                </label>
+                                <label class="settings-row">
+                                        <span>BareMux backend</span>
+                                        <select id="setting-bare-transport">
+                                                <option value="libcurl">libcurl</option>
+                                                <option value="epoxy">Epoxy</option>
+                                        </select>
+                                </label>
+                                <button type="button" id="setting-capture" class="settings-action-btn">Сохранить куки сайта</button>
+                                <button type="button" id="setting-profiles" class="settings-action-btn">Профили</button>
+                                <button type="button" id="setting-home" class="settings-home">Домой</button>
+                        </div>
+                        <div id="bar-status" role="status" aria-live="polite"></div>
+                </nav>
+        </body>
+</html>

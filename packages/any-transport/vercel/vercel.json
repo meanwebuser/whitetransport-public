@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "name": "y-transport-proxy",
+  "builds": [
+    { "src": "api/**/*.ts", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/webhook/(.*)", "dest": "/api/webhook/$1" },
+    { "src": "/api/(.*)", "dest": "/api/$1" }
+  ],
+  "env": {
+    "VK_TOKEN_1": "@vk-token-1",
+    "VK_CONFIRMATION_TOKEN": "@vk-confirmation-token",
+    "VK_CALLBACK_SECRET": "@vk-callback-secret",
+    "TG_TOKEN_1": "@tg-token-1",
+    "TG_WEBHOOK_SECRET": "@tg-webhook-secret",
+    "OK_TOKEN": "@ok-token",
+    "OK_APP_KEY": "@ok-app-key",
+    "OK_APP_SECRET": "@ok-app-secret"
+  }
+}

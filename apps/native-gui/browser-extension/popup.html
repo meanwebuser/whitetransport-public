@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WhiteTransport</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div>
+          <p class="eyebrow">WhiteTransport</p>
+          <h1>Сессия браузера</h1>
+        </div>
+        <span id="bridge-state" class="state state-unknown">Проверяем…</span>
+      </header>
+      <p class="intro">Передача сессий Телемоста, DION и VK в локальный WhiteTransport.</p>
+      <fieldset>
+        <legend>Что сохранить</legend>
+        <label class="check-row"><input id="include-cookies" type="checkbox" checked /> <span>Cookies текущего сервиса</span></label>
+        <label class="check-row"><input id="auto-refresh" type="checkbox" /> <span>Проверять команды CLI каждые 30 секунд</span></label>
+      </fieldset>
+      <p class="warning"><strong>Важно.</strong> Запрос и JSON содержат данные входа. Используйте их только для локального процесса или ручного импорта.</p>
+      <div class="actions">
+        <button id="export" class="primary" type="button">Отправить свежую сессию</button>
+        <button id="copy-meeting" class="secondary" type="button">Скопировать ссылку Телемоста</button>
+        <button id="save-json" class="secondary" type="button">Сохранить JSON для ручного импорта</button>
+      </div>
+      <label class="command-label" for="import-command">Команда импорта</label>
+      <textarea id="import-command" rows="4" readonly hidden></textarea>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </main>
+    <script src="lib/bridge-client.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

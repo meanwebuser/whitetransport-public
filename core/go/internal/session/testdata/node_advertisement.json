@@ -1,0 +1,21 @@
+{
+  "node_id": "example-exit-node",
+  "role": "node",
+  "label": "Example Exit Node",
+  "country": "NL",
+  "region": "AMS",
+  "capabilities": [
+    "egress",
+    "bulk"
+  ],
+  "carriers": [
+    {
+      "ID": "vk-control",
+      "Carrier": "vk.messages",
+      "Address": "peer:PLACEHOLDER_VK_PEER_ID",
+      "Metadata": {
+        "scope": "control"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "role": "node",
+  "node_id": "local-failover-node",
+  "display_name": "Local Failover Node",
+  "listen_api": "127.0.0.1:__NODE_API_PORT__",
+  "socks_listen": "127.0.0.1:__NODE_SOCKS_PORT__",
+  "enabled_carriers": ["local.control", "local.egress.primary", "local.egress.backup"],
+  "carrier_configs": [
+    {
+      "id": "local.control",
+      "carrier_type": "file.mailbox",
+      "file_mailbox": {"dir": "__CONTROL_DIR__"},
+      "endpoint": {"id": "local.control", "address": "control"}
+    },
+    {
+      "id": "local.egress.primary",
+      "carrier_type": "file.mailbox",
+      "file_mailbox": {"dir": "__PRIMARY_DIR__", "allow_egress": true},
+      "endpoint": {"id": "local.egress.primary", "address": "primary"}
+    },
+    {
+      "id": "local.egress.backup",
+      "carrier_type": "file.mailbox",
+      "file_mailbox": {"dir": "__BACKUP_DIR__", "allow_egress": true},
+      "endpoint": {"id": "local.egress.backup", "address": "backup"}
+    }
+  ],
+  "bootstrap_secret": "deterministic-local-bootstrap-fixture",
+  "upstream_proxy": {"url": "", "client_egress_only": true, "apply_to_carriers": false}
+}

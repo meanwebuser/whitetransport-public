@@ -1,0 +1,34 @@
+.loading-overlay { position: fixed; inset: 0 0 calc(env(safe-area-inset-bottom) + 56px) 0; z-index: 18; display: block; background: radial-gradient(circle at 50% 38%, rgba(68,208,123,.08), transparent 28%), linear-gradient(180deg, rgba(10,12,18,.22), rgba(10,12,18,.34)); backdrop-filter: blur(4px); pointer-events: none; overflow: hidden; transition: bottom .22s ease; }
+.loading-overlay[hidden] { display: none; }
+body.browsing.bar-bottom.bar-expanded .loading-overlay { top: 0; bottom: calc(env(safe-area-inset-bottom) + var(--bar-expanded)); }
+body.browsing.bar-bottom.bar-collapsed .loading-overlay { top: 0; bottom: calc(env(safe-area-inset-bottom) + var(--bar-collapsed)); }
+body.browsing.bar-top.bar-expanded .loading-overlay { top: calc(env(safe-area-inset-top) + var(--bar-expanded)); bottom: 0; }
+body.browsing.bar-top.bar-collapsed .loading-overlay { top: calc(env(safe-area-inset-top) + var(--bar-collapsed)); bottom: 0; }
+body.browsing.logs-enabled.bar-bottom.bar-expanded .loading-overlay { bottom: calc(env(safe-area-inset-bottom) + var(--bar-expanded) + var(--debug-height)); }
+body.browsing.logs-enabled.bar-bottom.bar-collapsed .loading-overlay { bottom: calc(env(safe-area-inset-bottom) + var(--bar-collapsed) + var(--debug-height)); }
+body.browsing.logs-enabled.bar-top .loading-overlay { bottom: var(--debug-height); }
+.loader-scene { position: absolute; inset: 0; overflow: hidden; }
+.loader-caption { position: absolute; left: 50%; top: 15%; transform: translateX(-50%); width: min(720px, calc(100vw - 28px)); text-align: center; padding: 14px 16px; border-radius: 22px; background: rgba(8,11,16,.32); border: 1px solid rgba(255,255,255,.10); backdrop-filter: blur(10px); box-shadow: 0 18px 50px rgba(0,0,0,.20); }
+.loader-title { font-size: 19px; font-weight: 950; letter-spacing: -.02em; color: #fff; }
+.loader-subtitle { margin-top: 7px; font-size: 13px; line-height: 1.4; color: rgba(255,255,255,.72); }
+.cat-cable-scene .cat-cable { position: absolute; left: -32vw; width: 164vw; height: 4px; border-radius: 999px; background: linear-gradient(90deg, rgba(120,180,255,.08), rgba(120,180,255,.30) 16%, rgba(68,208,123,.78) 45%, rgba(255,211,106,.82) 66%, rgba(120,180,255,.22) 86%, rgba(120,180,255,.06)); box-shadow: 0 0 10px rgba(68,208,123,.22), 0 0 18px rgba(255,211,106,.14); opacity: .95; transition: top .24s ease; }
+.cat-runner { position: absolute; left: -140px; top: 60%; width: 84px; height: 54px; will-change: transform, top; pointer-events: none; }
+.cat-body { position: relative; width: 64px; height: 36px; margin-top: 12px; border-radius: 22px 22px 18px 18px; background: radial-gradient(circle at 32% 35%, rgba(255,255,255,.36), transparent 22%), linear-gradient(180deg, #2f3945, #1d252f 68%, #161c23); box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 6px 18px rgba(0,0,0,.28); animation: catBodyBob .34s ease-in-out infinite alternate; }
+.cat-ear { position: absolute; top: -10px; width: 16px; height: 16px; background: #2b333d; transform: rotate(45deg); border-radius: 2px; }
+.cat-ear.left { left: 10px; }
+.cat-ear.right { right: 10px; }
+.cat-face { position: absolute; left: 12px; right: 12px; top: 9px; height: 14px; }
+.cat-eye { position: absolute; top: 1px; width: 7px; height: 7px; border-radius: 50%; background: #a9f5c5; box-shadow: 0 0 8px rgba(169,245,197,.35); animation: catBlink 3.4s infinite; }
+.cat-eye.left { left: 6px; }
+.cat-eye.right { right: 6px; }
+.cat-nose { position: absolute; left: 50%; top: 7px; transform: translateX(-50%); width: 6px; height: 4px; border-radius: 999px; background: #f4a8b8; }
+.cat-tail { position: absolute; right: -14px; top: 8px; width: 18px; height: 18px; border: 4px solid #27303a; border-left: 0; border-bottom: 0; border-radius: 0 18px 0 0; transform-origin: left bottom; animation: catTailWave .42s ease-in-out infinite alternate; }
+.cat-body::before, .cat-body::after { content: ""; position: absolute; bottom: -7px; width: 10px; height: 16px; border-radius: 999px; background: #202831; }
+.cat-body::before { left: 13px; box-shadow: 24px 0 0 #202831; animation: catLegs1 .28s linear infinite; }
+.cat-body::after { left: 7px; box-shadow: 24px 0 0 #202831; animation: catLegs2 .28s linear infinite; }
+@keyframes catBodyBob { from { transform: translateY(0); } to { transform: translateY(2px); } }
+@keyframes catTailWave { from { transform: rotate(12deg); } to { transform: rotate(-18deg); } }
+@keyframes catBlink { 0%, 46%, 48%, 100% { transform: scaleY(1); opacity: 1; } 47% { transform: scaleY(.15); opacity: .75; } }
+@keyframes catLegs1 { 0% { transform: translateY(0); } 50% { transform: translateY(2px); } 100% { transform: translateY(0); } }
+@keyframes catLegs2 { 0% { transform: translateY(2px); } 50% { transform: translateY(0); } 100% { transform: translateY(2px); } }
+@media (max-width: 560px) { .loading-overlay { inset: 0 0 calc(env(safe-area-inset-bottom) + 52px) 0; } .loader-caption { top: 13%; width: calc(100vw - 20px); padding: 13px 14px; } .loader-title { font-size: 17px; } .loader-subtitle { font-size: 12px; } .cat-runner { width: 74px; height: 48px; } .cat-body { width: 58px; height: 33px; } }

@@ -1,0 +1,235 @@
+name: Public provisioning-only release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*-public.*'
+    paths:
+      - '.github/workflows/public-provisioning-release.yml'
+      - '.github/public-release-request'
+      - '.github/public-release-trigger'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing public release tag to rebuild and upload
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-24.04
+    env:
+      RELEASE_DIR: dist/release
+      DISPATCH_TAG: ${{ inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve exact public release request
+        shell: bash
+        run: |
+          set -euo pipefail
+          build_assets=0
+          release_tag=""
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            release_tag="$DISPATCH_TAG"
+            build_assets=1
+          elif [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            release_tag="$GITHUB_REF_NAME"
+            build_assets=1
+          elif [[ "$GITHUB_REF" == "refs/heads/main" && -s .github/public-release-request ]]; then
+            release_tag="$(tr -d '[:space:]' < .github/public-release-request)"
+            build_assets=1
+          fi
+          if [[ "$build_assets" == 1 ]]; then
+            [[ "$release_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-public\.[0-9]+$ ]]
+            git show-ref --verify --quiet "refs/tags/$release_tag"
+            git checkout --detach "refs/tags/$release_tag"
+          else
+            release_tag="$GITHUB_REF_NAME"
+          fi
+          printf 'RELEASE_TAG=%s\nBUILD_ASSETS=%s\n' "$release_tag" "$build_assets" >> "$GITHUB_ENV"
+
+      - name: Verify exact public tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$BUILD_ASSETS" == 1 ]]; then
+            test "$(git describe --exact-match --tags HEAD)" = "$RELEASE_TAG"
+          else
+            test "${GITHUB_REF}" = "refs/heads/main"
+          fi
+          git diff --check
+
+      - name: Install scanner compatibility for existing public tags
+        shell: bash
+        run: |
+          set -euo pipefail
+          if test -f tools/public_secret_scan.py; then
+            exit 0
+          fi
+          mkdir -p tools
+          cat > tools/public_secret_scan.py <<'PY'
+          import os, re, sys
+          from pathlib import Path
+          rules = [
+              re.compile(rb"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
+              re.compile(rb"\b(?:ghp|github_pat|gho|ghs|ghr)_[A-Za-z0-9_]{30,}\b"),
+              re.compile(rb"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b"),
+              re.compile(rb"\bvk1\.a\.[A-Za-z0-9_-]{20,}\b"),
+              re.compile(rb"\b-n-[A-Za-z0-9_-]{16,}:[A-Za-z0-9_-]{12,}\b"),
+              re.compile(b"(?:" + b"bezrabotnyi" + rb"\.com|/home/" + b"roomhacker" + rb"(?:/|\b)|\b(?:server(?:88|100)|vpn" + b"2" + rb")\b)"),
+          ]
+          root = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
+          findings = []
+          for current, dirs, files in os.walk(root):
+              dirs[:] = [d for d in dirs if d not in {".git", "node_modules", "dist", "build"}]
+              for name in files:
+                  path = Path(current, name)
+                  data = path.read_bytes()
+                  if any(rule.search(data) for rule in rules):
+                      findings.append(path.relative_to(root))
+          print(f"public secret compatibility scan: findings={len(findings)}")
+          raise SystemExit(1 if findings else 0)
+          PY
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.1'
+          cache-dependency-path: core/go/go.sum
+
+      - name: Provide Go path compatibility for immutable public tags
+        shell: bash
+        run: |
+          set -euo pipefail
+          go_path="$(command -v go)"
+          if ! test -x /usr/local/go/bin/go; then
+            sudo install -d -m 0755 /usr/local/go/bin
+            sudo ln -s "$go_path" /usr/local/go/bin/go
+          fi
+          /usr/local/go/bin/go version
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install Linux GUI build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev xvfb iproute2
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
+          echo "$HOME/go/bin" >> "$GITHUB_PATH"
+
+      - name: Scan public source
+        run: |
+          set -euo pipefail
+          python3 tools/public_secret_scan.py .
+
+      - name: Verify public source contract
+        run: |
+          set -euo pipefail
+          bash tests/public-release-source-contract.sh
+
+      - name: Install and build frontend
+        run: |
+          set -euo pipefail
+          command -v npm
+          npm --version
+          npm ci --ignore-scripts
+          npm --prefix apps/native-gui run build
+
+      - name: Run native GUI Go tests
+        run: |
+          set -euo pipefail
+          command -v go
+          go version
+          (cd apps/native-gui && go test ./... -count=1)
+
+      - name: Prime public Go module cache
+        run: |
+          set -euo pipefail
+          command -v go
+          (cd core/go && go mod download)
+
+      - name: Run deterministic local daemon test
+        run: |
+          set -euo pipefail
+          for command in go git curl python3 unshare nsenter ip; do
+            command -v "$command"
+          done
+          WT_GO_BIN="$(command -v go)" bash core/go/tests/test-local.sh
+
+      - name: Build provisioning-only Linux assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$BUILD_ASSETS" != 1 ]]; then echo 'No release request; asset build skipped.'; exit 0; fi
+          version="${RELEASE_TAG#v}"
+          sha="$(git rev-parse HEAD)"
+          mkdir -p "$RELEASE_DIR"
+          (
+            cd core/go
+            GOPROXY=off go build -trimpath \
+              -ldflags "-s -w -X main.buildVersion=$version -X main.buildCommit=$sha -X main.buildDate=$(date -u +%F)" \
+              -o "../../$RELEASE_DIR/whitetransportd-linux-x64" ./cmd/whitetransportd
+          )
+          "$RELEASE_DIR/whitetransportd-linux-x64" -version
+          npm --prefix apps/native-gui run build
+          (cd apps/native-gui && wails build -clean -tags webkit2_41)
+          package="whitetransport-${version}-linux-x64-provisioning-only"
+          mkdir -p "$RELEASE_DIR/$package"
+          install -m 0755 apps/native-gui/build/bin/WhiteTransport "$RELEASE_DIR/$package/WhiteTransport"
+          install -m 0755 "$RELEASE_DIR/whitetransportd-linux-x64" "$RELEASE_DIR/$package/whitetransportd"
+          install -m 0644 LICENSE "$RELEASE_DIR/$package/LICENSE"
+          cat > "$RELEASE_DIR/$package/PROVISIONING-ONLY.txt" <<EOF
+          WhiteTransport ${version} provisioning-only Linux x64 package
+          Source commit: ${sha}
+
+          This archive contains no TokenStore, production configuration,
+          provider credentials, production topology, or sing-box runtime/profile.
+          EOF
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
+            -C "$RELEASE_DIR" -czf "$RELEASE_DIR/${package}.tar.gz" "$package"
+          (
+            cd "$RELEASE_DIR"
+            sha256sum whitetransportd-linux-x64 "${package}.tar.gz" > SHA256SUMS.txt
+          )
+
+      - name: Audit packaged assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$BUILD_ASSETS" != 1 ]]; then echo 'No release request; asset audit skipped.'; exit 0; fi
+          version="${RELEASE_TAG#v}"
+          package="whitetransport-${version}-linux-x64-provisioning-only"
+          (
+            cd "$RELEASE_DIR"
+            sha256sum -c SHA256SUMS.txt
+            mkdir extracted
+            tar -xzf "${package}.tar.gz" -C extracted
+            test "$(find "extracted/$package" -maxdepth 1 -type f -printf '%f\n' | sort | tr '\n' ' ')" = 'LICENSE PROVISIONING-ONLY.txt WhiteTransport whitetransportd '
+            ! find "extracted/$package" -type f \( -iname '*token*' -o -iname '*secret*' -o -iname '*config*.json' -o -iname 'sing-box*' \) -print -quit | grep -q .
+            ./extracted/"$package"/whitetransportd -version
+          )
+          python3 tools/public_secret_scan.py "$RELEASE_DIR"
+
+      - name: Upload or replace existing release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$BUILD_ASSETS" != 1 ]]; then echo 'No release request; upload skipped.'; exit 0; fi
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null
+          gh release upload "$RELEASE_TAG" \
+            "$RELEASE_DIR/whitetransportd-linux-x64" \
+            "$RELEASE_DIR/whitetransport-${RELEASE_TAG#v}-linux-x64-provisioning-only.tar.gz" \
+            "$RELEASE_DIR/SHA256SUMS.txt" \
+            --clobber --repo "$GITHUB_REPOSITORY"

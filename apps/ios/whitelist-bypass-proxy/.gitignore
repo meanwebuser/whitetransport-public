@@ -1,0 +1,9 @@
+.DS_Store
+build/
+Mobile.xcframework/
+WTCore.xcframework/
+xcuserdata/
+*.xcuserstate
+DerivedData/
+whitelist-bypass-proxy/WtBusSecrets.swift
+whitelist-bypass-proxy/wt-runtime-config.json
