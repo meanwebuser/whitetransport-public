@@ -1,0 +1,140 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C00000000000000000000001 /* AppGroupStatusStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000001 /* AppGroupStatusStore.swift */; };
+		C00000000000000000000002 /* ConnectionContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000002 /* ConnectionContract.swift */; };
+		C00000000000000000000003 /* PacketFlowBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000003 /* PacketFlowBridge.swift */; };
+		C00000000000000000000004 /* PacketTunnelConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000004 /* PacketTunnelConfiguration.swift */; };
+		C00000000000000000000005 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000005 /* PacketTunnelProvider.swift */; };
+		C00000000000000000000006 /* PacketTunnelProviderLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000006 /* PacketTunnelProviderLifecycle.swift */; };
+		C00000000000000000000007 /* VPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000007 /* VPNManager.swift */; };
+		C00000000000000000000008 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B00000000000000000000020 /* NetworkExtension.framework */; };
+		C0000000000000000000000E /* PacketTunnelProviderPrincipal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000B /* PacketTunnelProviderPrincipal.swift */; };
+		C0000000000000000000000F /* WhiteTransportCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B00000000000000000000030 /* WhiteTransportCore.framework */; };
+		C00000000000000000000011 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B00000000000000000000020 /* NetworkExtension.framework */; };
+		C00000000000000000000012 /* AppGroupStatusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000E /* AppGroupStatusStoreTests.swift */; };
+		C00000000000000000000013 /* ConnectionContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000F /* ConnectionContractTests.swift */; };
+		C00000000000000000000014 /* PacketFlowBridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000010 /* PacketFlowBridgeTests.swift */; };
+		C00000000000000000000015 /* PacketTunnelConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000011 /* PacketTunnelConfigurationTests.swift */; };
+		C00000000000000000000016 /* PacketTunnelProviderLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000012 /* PacketTunnelProviderLifecycleTests.swift */; };
+		C00000000000000000000017 /* PacketTunnelExtensionBridgeFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000013 /* PacketTunnelExtensionBridgeFactoryTests.swift */; };
+		C00000000000000000000018 /* VPNManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000014 /* VPNManagerTests.swift */; };
+		C00000000000000000000019 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B00000000000000000000022 /* XCTest.framework */; };
+		C0000000000000000000001A /* WhiteTransportCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B00000000000000000000030 /* WhiteTransportCore.framework */; };
+		C0000000000000000000001B /* DarwinTun2SocksEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000015 /* DarwinTun2SocksEngine.swift */; };
+		C0000000000000000000001C /* DarwinTun2SocksCAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000016 /* DarwinTun2SocksCAPI.swift */; };
+		C0000000000000000000001D /* DarwinTun2SocksEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000017 /* DarwinTun2SocksEngineTests.swift */; };
+		C0000000000000000000001E /* WailsVPNBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000018 /* WailsVPNBridge.swift */; };
+		C0000000000000000000001F /* SMAppServiceProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000019 /* SMAppServiceProbe.swift */; };
+		C00000000000000000000020 /* SMAppServiceProbeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000001A /* SMAppServiceProbeTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		H00000000000000000000001 = {isa = PBXContainerItemProxy; containerPortal = A00000000000000000000001 /* Project object */; proxyType = 1; remoteGlobalIDString = D00000000000000000000001; remoteInfo = WhiteTransportCore; };
+		H00000000000000000000004 = {isa = PBXContainerItemProxy; containerPortal = A00000000000000000000001 /* Project object */; proxyType = 1; remoteGlobalIDString = D00000000000000000000001; remoteInfo = WhiteTransportCore; };
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		B00000000000000000000001 /* AppGroupStatusStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupStatusStore.swift; sourceTree = "<group>"; };
+		B00000000000000000000002 /* ConnectionContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionContract.swift; sourceTree = "<group>"; };
+		B00000000000000000000003 /* PacketFlowBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketFlowBridge.swift; sourceTree = "<group>"; };
+		B00000000000000000000004 /* PacketTunnelConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelConfiguration.swift; sourceTree = "<group>"; };
+		B00000000000000000000005 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
+		B00000000000000000000006 /* PacketTunnelProviderLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProviderLifecycle.swift; sourceTree = "<group>"; };
+		B00000000000000000000007 /* VPNManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNManager.swift; sourceTree = "<group>"; };
+		B0000000000000000000000B /* PacketTunnelProviderPrincipal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProviderPrincipal.swift; sourceTree = "<group>"; };
+		B0000000000000000000000C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B0000000000000000000000D /* WhiteTransportPacketTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WhiteTransportPacketTunnel.entitlements; sourceTree = "<group>"; };
+		B0000000000000000000000E /* AppGroupStatusStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupStatusStoreTests.swift; sourceTree = "<group>"; };
+		B0000000000000000000000F /* ConnectionContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionContractTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000010 /* PacketFlowBridgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketFlowBridgeTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000011 /* PacketTunnelConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelConfigurationTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000012 /* PacketTunnelProviderLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProviderLifecycleTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000013 /* PacketTunnelExtensionBridgeFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelExtensionBridgeFactoryTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000014 /* VPNManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNManagerTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000015 /* DarwinTun2SocksEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarwinTun2SocksEngine.swift; sourceTree = "<group>"; };
+		B00000000000000000000016 /* DarwinTun2SocksCAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarwinTun2SocksCAPI.swift; sourceTree = "<group>"; };
+		B00000000000000000000017 /* DarwinTun2SocksEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarwinTun2SocksEngineTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000018 /* WailsVPNBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WailsVPNBridge.swift; sourceTree = "<group>"; };
+		B00000000000000000000019 /* SMAppServiceProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../SMAppServiceProbe.swift; sourceTree = "<group>"; };
+		B0000000000000000000001A /* SMAppServiceProbeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMAppServiceProbeTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000020 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		B00000000000000000000022 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
+		B00000000000000000000030 /* WhiteTransportMacOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WhiteTransportMacOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B00000000000000000000031 /* WhiteTransportPacketTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WhiteTransportPacketTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B00000000000000000000033 /* WhiteTransportCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhiteTransportCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E00000000000000000000002 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (C00000000000000000000008 /* NetworkExtension.framework in Frameworks */, ); runOnlyForDeploymentPostprocessing = 0; };
+		E00000000000000000000006 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (C0000000000000000000000F /* WhiteTransportCore.framework in Frameworks */, C00000000000000000000011 /* NetworkExtension.framework in Frameworks */, ); runOnlyForDeploymentPostprocessing = 0; };
+		E0000000000000000000000C = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (C00000000000000000000019 /* XCTest.framework in Frameworks */, C0000000000000000000001A /* WhiteTransportCore.framework in Frameworks */, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A00000000000000000000002 = {isa = PBXGroup; children = (A00000000000000000000010 /* Shared */, A00000000000000000000011 /* WhiteTransportPacketTunnel */, A00000000000000000000012 /* WhiteTransportVPNControl */, A00000000000000000000014 /* WhiteTransportPacketTunnelExtension */, A00000000000000000000015 /* WhiteTransportPacketTunnelTests */, A00000000000000000000004 /* Frameworks */, A00000000000000000000003 /* Products */, ); sourceTree = "<group>"; };
+		A00000000000000000000003 /* Products */ = {isa = PBXGroup; children = (B00000000000000000000030 /* WhiteTransportCore.framework */, B00000000000000000000031 /* WhiteTransportPacketTunnel.appex */, B00000000000000000000033 /* WhiteTransportCoreTests.xctest */, ); name = Products; sourceTree = "<group>"; };
+		A00000000000000000000004 /* Frameworks */ = {isa = PBXGroup; children = (B00000000000000000000020 /* NetworkExtension.framework */, B00000000000000000000022 /* XCTest.framework */, ); name = Frameworks; sourceTree = "<group>"; };
+		A00000000000000000000010 /* Shared */ = {isa = PBXGroup; children = (B00000000000000000000001 /* AppGroupStatusStore.swift */, B00000000000000000000002 /* ConnectionContract.swift */, B00000000000000000000019 /* SMAppServiceProbe.swift */, ); path = Shared; sourceTree = "<group>"; };
+		A00000000000000000000011 /* WhiteTransportPacketTunnel */ = {isa = PBXGroup; children = (B00000000000000000000015 /* DarwinTun2SocksEngine.swift */, B00000000000000000000003 /* PacketFlowBridge.swift */, B00000000000000000000004 /* PacketTunnelConfiguration.swift */, B00000000000000000000005 /* PacketTunnelProvider.swift */, B00000000000000000000006 /* PacketTunnelProviderLifecycle.swift */, ); path = WhiteTransportPacketTunnel; sourceTree = "<group>"; };
+		A00000000000000000000012 /* WhiteTransportVPNControl */ = {isa = PBXGroup; children = (B00000000000000000000007 /* VPNManager.swift */, B00000000000000000000018 /* WailsVPNBridge.swift */, ); path = WhiteTransportVPNControl; sourceTree = "<group>"; };
+		A00000000000000000000014 /* WhiteTransportPacketTunnelExtension */ = {isa = PBXGroup; children = (B00000000000000000000016 /* DarwinTun2SocksCAPI.swift */, B0000000000000000000000B /* PacketTunnelProviderPrincipal.swift */, B0000000000000000000000C /* Info.plist */, B0000000000000000000000D /* WhiteTransportPacketTunnel.entitlements */, ); path = WhiteTransportPacketTunnelExtension; sourceTree = "<group>"; };
+		A00000000000000000000015 /* WhiteTransportPacketTunnelTests */ = {isa = PBXGroup; children = (B0000000000000000000000E /* AppGroupStatusStoreTests.swift */, B0000000000000000000000F /* ConnectionContractTests.swift */, B00000000000000000000017 /* DarwinTun2SocksEngineTests.swift */, B00000000000000000000010 /* PacketFlowBridgeTests.swift */, B00000000000000000000011 /* PacketTunnelConfigurationTests.swift */, B00000000000000000000012 /* PacketTunnelProviderLifecycleTests.swift */, B00000000000000000000013 /* PacketTunnelExtensionBridgeFactoryTests.swift */, B00000000000000000000014 /* VPNManagerTests.swift */, B0000000000000000000001A /* SMAppServiceProbeTests.swift */, ); path = WhiteTransportPacketTunnelTests; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D00000000000000000000001 /* WhiteTransportCore */ = {isa = PBXNativeTarget; buildConfigurationList = G00000000000000000000002; buildPhases = (E00000000000000000000001, E00000000000000000000002, ); buildRules = (); dependencies = (); name = WhiteTransportCore; productName = WhiteTransportMacOS; productReference = B00000000000000000000030 /* WhiteTransportMacOS.framework */; productType = "com.apple.product-type.framework"; };
+		D00000000000000000000002 /* WhiteTransportPacketTunnel */ = {isa = PBXNativeTarget; buildConfigurationList = G00000000000000000000003; buildPhases = (E0000000000000000000000D, E00000000000000000000005, E00000000000000000000006, ); buildRules = (); dependencies = (H00000000000000000000011 /* PBXTargetDependency */, ); name = WhiteTransportPacketTunnel; productName = WhiteTransportPacketTunnel; productReference = B00000000000000000000031 /* WhiteTransportPacketTunnel.appex */; productType = "com.apple.product-type.app-extension"; };
+		D00000000000000000000004 /* WhiteTransportCoreTests */ = {isa = PBXNativeTarget; buildConfigurationList = G00000000000000000000005; buildPhases = (E0000000000000000000000B, E0000000000000000000000C, ); buildRules = (); dependencies = (H00000000000000000000014 /* PBXTargetDependency */, ); name = WhiteTransportCoreTests; productName = WhiteTransportCoreTests; productReference = B00000000000000000000033 /* WhiteTransportCoreTests.xctest */; productType = "com.apple.product-type.bundle.unit-test"; };
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A00000000000000000000001 /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 2660; LastUpgradeCheck = 2660; TargetAttributes = {D00000000000000000000002 = {CreatedOnToolsVersion = 26.6; SystemCapabilities = {com.apple.ApplicationGroups = {enabled = 1; }; com.apple.NetworkExtensions = {enabled = 1; }; }; }; }; }; buildConfigurationList = G00000000000000000000001; compatibilityVersion = "Xcode 15.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base, ); mainGroup = A00000000000000000000002; productRefGroup = A00000000000000000000003 /* Products */; projectDirPath = ""; projectRoot = ""; targets = (D00000000000000000000001 /* WhiteTransportCore */, D00000000000000000000002 /* WhiteTransportPacketTunnel */, D00000000000000000000004 /* WhiteTransportCoreTests */, ); };
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E0000000000000000000000D /* Build Darwin tun2socks C archive */ = {isa = PBXShellScriptBuildPhase; alwaysOutOfDate = 1; buildActionMask = 2147483647; files = (); inputPaths = ("$(SRCROOT)/EngineBridge/main.go", "$(SRCROOT)/EngineBridge/build-c-archive.sh", ); name = "Build Darwin tun2socks C archive"; outputPaths = ("$(DERIVED_FILE_DIR)/WhiteTransportTun2Socks/libWhiteTransportTun2Socks.a", "$(DERIVED_FILE_DIR)/WhiteTransportTun2Socks/WhiteTransportTun2Socks.h", "$(DERIVED_FILE_DIR)/WhiteTransportTun2Socks/module.modulemap", ); runOnlyForDeploymentPostprocessing = 0; shellPath = /bin/bash; shellScript = "GO_BINARY=/usr/local/go/bin/go \"${SRCROOT}/EngineBridge/build-c-archive.sh\" \"${DERIVED_FILE_DIR}/WhiteTransportTun2Socks\"\n"; };
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E00000000000000000000001 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C00000000000000000000001 /* AppGroupStatusStore.swift in Sources */, C00000000000000000000002 /* ConnectionContract.swift in Sources */, C0000000000000000000001B /* DarwinTun2SocksEngine.swift in Sources */, C00000000000000000000003 /* PacketFlowBridge.swift in Sources */, C00000000000000000000004 /* PacketTunnelConfiguration.swift in Sources */, C00000000000000000000005 /* PacketTunnelProvider.swift in Sources */, C00000000000000000000006 /* PacketTunnelProviderLifecycle.swift in Sources */, C00000000000000000000007 /* VPNManager.swift in Sources */, C0000000000000000000001E /* WailsVPNBridge.swift in Sources */, C0000000000000000000001F /* SMAppServiceProbe.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
+		E00000000000000000000005 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C0000000000000000000001C /* DarwinTun2SocksCAPI.swift in Sources */, C0000000000000000000000E /* PacketTunnelProviderPrincipal.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
+		E0000000000000000000000B = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C00000000000000000000012 /* AppGroupStatusStoreTests.swift in Sources */, C00000000000000000000013 /* ConnectionContractTests.swift in Sources */, C0000000000000000000001D /* DarwinTun2SocksEngineTests.swift in Sources */, C00000000000000000000014 /* PacketFlowBridgeTests.swift in Sources */, C00000000000000000000015 /* PacketTunnelConfigurationTests.swift in Sources */, C00000000000000000000016 /* PacketTunnelProviderLifecycleTests.swift */, C00000000000000000000017 /* PacketTunnelExtensionBridgeFactoryTests.swift in Sources */, C00000000000000000000018 /* VPNManagerTests.swift in Sources */, C00000000000000000000020 /* SMAppServiceProbeTests.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		H00000000000000000000011 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = D00000000000000000000001 /* WhiteTransportCore */; targetProxy = H00000000000000000000001; };
+		H00000000000000000000012 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = D00000000000000000000001 /* WhiteTransportCore */; targetProxy = H00000000000000000000003; };
+		H00000000000000000000013 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = D00000000000000000000002 /* WhiteTransportPacketTunnel */; targetProxy = H00000000000000000000002; };
+		H00000000000000000000014 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = D00000000000000000000001 /* WhiteTransportCore */; targetProxy = H00000000000000000000004; };
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F00000000000000000000001 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; CODE_SIGNING_ALLOWED = NO; DEBUG_INFORMATION_FORMAT = dwarf; ENABLE_TESTABILITY = YES; GCC_C_LANGUAGE_STANDARD = gnu17; MACOSX_DEPLOYMENT_TARGET = 12.0; ONLY_ACTIVE_ARCH = YES; SDKROOT = macosx; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_STRICT_CONCURRENCY = complete; SWIFT_VERSION = 6.0; }; name = Debug; };
+		F00000000000000000000002 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; CODE_SIGNING_ALLOWED = NO; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; GCC_C_LANGUAGE_STANDARD = gnu17; MACOSX_DEPLOYMENT_TARGET = 12.0; SDKROOT = macosx; SWIFT_COMPILATION_MODE = wholemodule; SWIFT_OPTIMIZATION_LEVEL = "-O"; SWIFT_STRICT_CONCURRENCY = complete; SWIFT_VERSION = 6.0; }; name = Release; };
+		F00000000000000000000011 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {DEFINES_MODULE = YES; DYLIB_COMPATIBILITY_VERSION = 1; DYLIB_CURRENT_VERSION = 1; DYLIB_INSTALL_NAME_BASE = "@rpath"; GENERATE_INFOPLIST_FILE = YES; INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks"; PRODUCT_BUNDLE_IDENTIFIER = com.meanwebuser.whitetransport.core; PRODUCT_MODULE_NAME = WhiteTransportMacOS; PRODUCT_NAME = WhiteTransportMacOS; SKIP_INSTALL = YES; }; name = Debug; };
+		F00000000000000000000012 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {DEFINES_MODULE = YES; DYLIB_COMPATIBILITY_VERSION = 1; DYLIB_CURRENT_VERSION = 1; DYLIB_INSTALL_NAME_BASE = "@rpath"; GENERATE_INFOPLIST_FILE = YES; INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks"; PRODUCT_BUNDLE_IDENTIFIER = com.meanwebuser.whitetransport.core; PRODUCT_MODULE_NAME = WhiteTransportMacOS; PRODUCT_NAME = WhiteTransportMacOS; SKIP_INSTALL = YES; }; name = Release; };
+		F00000000000000000000021 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_ENTITLEMENTS = WhiteTransportPacketTunnelExtension/WhiteTransportPacketTunnel.entitlements; INFOPLIST_FILE = WhiteTransportPacketTunnelExtension/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../../../../Frameworks", ); LIBRARY_SEARCH_PATHS = ("$(inherited)", "$(DERIVED_FILE_DIR)/WhiteTransportTun2Socks", ); OTHER_LDFLAGS = ("$(inherited)", "-lWhiteTransportTun2Socks", ); PRODUCT_BUNDLE_IDENTIFIER = com.meanwebuser.whitetransport.packet-tunnel; PRODUCT_MODULE_NAME = WhiteTransportPacketTunnel; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SWIFT_INCLUDE_PATHS = ("$(inherited)", "$(DERIVED_FILE_DIR)/WhiteTransportTun2Socks", ); }; name = Debug; };
+		F00000000000000000000022 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_ENTITLEMENTS = WhiteTransportPacketTunnelExtension/WhiteTransportPacketTunnel.entitlements; INFOPLIST_FILE = WhiteTransportPacketTunnelExtension/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../../../../Frameworks", ); LIBRARY_SEARCH_PATHS = ("$(inherited)", "$(DERIVED_FILE_DIR)/WhiteTransportTun2Socks", ); OTHER_LDFLAGS = ("$(inherited)", "-lWhiteTransportTun2Socks", ); PRODUCT_BUNDLE_IDENTIFIER = com.meanwebuser.whitetransport.packet-tunnel; PRODUCT_MODULE_NAME = WhiteTransportPacketTunnel; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SWIFT_INCLUDE_PATHS = ("$(inherited)", "$(DERIVED_FILE_DIR)/WhiteTransportTun2Socks", ); }; name = Release; };
+		F00000000000000000000041 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {BUNDLE_LOADER = ""; GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = com.meanwebuser.whitetransport.core-tests; PRODUCT_NAME = "$(TARGET_NAME)"; TEST_HOST = ""; }; name = Debug; };
+		F00000000000000000000042 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {BUNDLE_LOADER = ""; GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = com.meanwebuser.whitetransport.core-tests; PRODUCT_NAME = "$(TARGET_NAME)"; TEST_HOST = ""; }; name = Release; };
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		G00000000000000000000001 = {isa = XCConfigurationList; buildConfigurations = (F00000000000000000000001 /* Debug */, F00000000000000000000002 /* Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		G00000000000000000000002 = {isa = XCConfigurationList; buildConfigurations = (F00000000000000000000011 /* Debug */, F00000000000000000000012 /* Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		G00000000000000000000003 = {isa = XCConfigurationList; buildConfigurations = (F00000000000000000000021 /* Debug */, F00000000000000000000022 /* Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		G00000000000000000000005 = {isa = XCConfigurationList; buildConfigurations = (F00000000000000000000041 /* Debug */, F00000000000000000000042 /* Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+/* End XCConfigurationList section */
+	};
+	rootObject = A00000000000000000000001 /* Project object */;
+}

@@ -1,0 +1,8 @@
+{
+	"appId": "bypass.whitelist",
+	"appName": "WhiteTransport",
+	"webDir": "dist",
+	"android": {
+		"path": "../android/whitelist-bypass-client"
+	}
+}

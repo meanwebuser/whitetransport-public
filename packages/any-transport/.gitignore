@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.db
+*.db-journal
+.env
+.env.local
+.env.production
+*.log
+.DS_Store
+Thumbs.db
+tsconfig.tsbuildinfo
+.vercel/

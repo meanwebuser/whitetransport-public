@@ -1,0 +1,78 @@
+{
+  "_comment": "Example node config. Provision provider credentials through TokenStore before use.",
+  "role": "node",
+  "node_id": "example-node",
+  "display_name": "Example node",
+  "country": "ZZ",
+  "region": "Example",
+  "listen_api": "127.0.0.1:17680",
+  "socks_listen": "127.0.0.1:1080",
+  "admin_reporter": {
+    "enabled": false,
+    "admin_url": "https://admin.example.com",
+    "token_env": "WT_ADMIN_NODE_TOKEN",
+    "register_path": "/api/nodes/register",
+    "heartbeat_path": "/api/nodes/heartbeat",
+    "logs_path": "/api/nodes/logs",
+    "interval_seconds": 60,
+    "upload_logs": true,
+    "ip": "node.example.invalid",
+    "api_host": "127.0.0.1",
+    "api_port": 17680,
+    "node_version": "2.0.0"
+  },
+  "admin_discovery": {
+    "_comment": "Simple HTTP discovery: clients fetch live node list from admin panel",
+    "enabled": false,
+    "admin_url": "https://admin.example.invalid",
+    "token_env": "WT_ADMIN_NODE_TOKEN",
+    "poll_interval_sec": 30,
+    "status_filter": "online"
+  },
+  "admin_relay": {
+    "_comment": "HTTP relay channels through admin panel for NAT traversal: discovery, control, logs, relay-internet",
+    "enabled": false,
+    "admin_url": "https://admin.example.invalid",
+    "token_ref": "admin-relay-example-node",
+    "channels": ["discovery", "control", "logs", "relay"],
+    "poll_interval_sec": 3,
+    "identity": "example-node"
+  },
+  "enabled_carriers": [
+    "vk.messages",
+    "ok.messages",
+    "wbstream"
+  ],
+  "carrier_configs": [
+    {
+      "id": "vk.messages",
+      "vk_messages": {
+        "token": "${WT_VK_TOKEN}",
+        "channels": [
+          { "peer_id": "${WT_VK_DISCOVERY_PEER_ID}", "role": "discovery", "label": "bootstrap bus" },
+          { "peer_id": "${WT_VK_CONTROL_PEER_ID}", "role": "node-client", "label": "session control" },
+          { "peer_id": "${WT_VK_LOGS_PEER_ID}", "role": "logs", "label": "client log upload" },
+          { "peer_id": "${WT_VK_ADMIN_PEER_ID}", "role": "admin", "label": "admin control" }
+        ]
+      },
+      "endpoint": { "id": "vk-discovery", "address": "${WT_VK_DISCOVERY_PEER_ID}" }
+    },
+    {
+      "id": "ok.messages",
+      "ok_messages": { "token": "${WT_OK_GRAPH_TOKEN}" },
+      "endpoint": { "id": "ok-control", "address": "${WT_OK_CHAT_ID}" }
+    },
+    {
+      "id": "wbstream",
+      "wbstream": {
+        "display_name": "WhiteTransport Node"
+      },
+      "endpoint": { "id": "wbstream-egress", "metadata": { "display_name": "WhiteTransport Node" } }
+    }
+  ],
+  "upstream_proxy": {
+    "url": "",
+    "client_egress_only": true,
+    "apply_to_carriers": false
+  }
+}
