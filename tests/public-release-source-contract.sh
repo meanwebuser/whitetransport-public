@@ -16,4 +16,9 @@ test -f "$HELPERS"
 grep -Fq 'type stubRuntimeService struct' "$HELPERS"
 grep -Fq 'func newTestLogSink' "$HELPERS"
 
+# The deterministic daemon integration lane uses only these public,
+# file-mailbox fixture templates and must not reach a private config directory.
+test -f "$ROOT_DIR/config/dev/local-failover-node.json.template"
+test -f "$ROOT_DIR/config/dev/local-failover-client.json.template"
+
 echo "public release source contract: PASS"
