@@ -152,6 +152,7 @@ func TestDirectHelperCommandUsesNativeAuthorizationPromptByDefault(t *testing.T)
 func TestDirectHelperCommandAllowsExplicitNonInteractiveTestAuth(t *testing.T) {
 	t.Setenv("HOME", "/Users/alice")
 	t.Setenv("WT_DIRECT_HELPER_AUTH_MODE", "sudo-noninteractive")
+	t.Setenv("MAC_SUDO", "")
 	host := newDirectSystemVPNHost()
 	got := host.commandArgs("start")
 	want := []string{"sudo", "-S", "-n", host.executable, "start", "--config", host.configPath}
@@ -187,6 +188,7 @@ func TestRunDirectCommandFeedsMacSudoOnlyThroughStdin(t *testing.T) {
 }
 
 func TestDirectHelperPermissionUsesSupportedStatusCommand(t *testing.T) {
+	t.Setenv("MAC_SUDO", "")
 	var commands []string
 	host := &directSystemVPNHost{
 		executable: "/Users/alice/Library/Application Support/WhiteTransport/bin/direct-helper",
