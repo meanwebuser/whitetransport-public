@@ -4,6 +4,29 @@
   "display_name": "Local Failover Node",
   "listen_api": "127.0.0.1:__NODE_API_PORT__",
   "socks_listen": "127.0.0.1:__NODE_SOCKS_PORT__",
+  "token_store": {
+    "tokens": [
+      {
+        "id": "local-test-bootstrap",
+        "platform": "local",
+        "kind": "api_key",
+        "lifecycle": "embedded",
+        "status": "active",
+        "value": "deterministic-local-session-key-not-a-secret"
+      }
+    ],
+    "bindings": [
+      {
+        "token_id": "local-test-bootstrap",
+        "platform": "local",
+        "connection_type": "messages",
+        "channel_id": "control",
+        "role": "discovery",
+        "priority": 10,
+        "enabled": true
+      }
+    ]
+  },
   "enabled_carriers": ["local.control", "local.egress.primary", "local.egress.backup"],
   "carrier_configs": [
     {
